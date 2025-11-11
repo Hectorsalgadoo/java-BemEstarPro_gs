@@ -1,7 +1,7 @@
-br\com\fiap\GreetingResource.class
-br\com\fiap\dao\FuncionarioDao.class
 br\com\fiap\models\Funcionario.class
-br\com\fiap\dto\FuncionarioRequestDto.class
 br\com\fiap\dto\FuncionarioResponseDto.class
 br\com\fiap\resource\FuncionarioResource.class
+br\com\fiap\GreetingResource.class
+br\com\fiap\dao\FuncionarioDao.class
+br\com\fiap\dto\FuncionarioRequestDto.class
 br\com\fiap\service\FuncionarioService.class
