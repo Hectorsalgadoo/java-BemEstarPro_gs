@@ -69,7 +69,9 @@ public class PesquisaRegimeTrabalhoService {
         if (funcionario == null) {
             throw new IllegalArgumentException("Funcionario com ID " + pesquisaDto.getIdfuncionario() + " não encontrado");
         }
-        pesquisa.setIdfuncionario(pesquisa.getIdfuncionario());
+//        pesquisa.setIdfuncionario(pesquisa.getIdfuncionario());
+        pesquisa.setIdfuncionario(pesquisaDto.getIdfuncionario());
+
         pesquisa.setFuncionario(funcionario);
 
         try {

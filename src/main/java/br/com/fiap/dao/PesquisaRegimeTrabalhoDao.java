@@ -2,6 +2,7 @@ package br.com.fiap.dao;
 
 import br.com.fiap.models.Funcionario;
 import br.com.fiap.models.PesquisaRegimeTrabalho;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import javax.sql.DataSource;
@@ -9,6 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@ApplicationScoped
 public class PesquisaRegimeTrabalhoDao {
 
     @Inject
@@ -65,7 +67,7 @@ public class PesquisaRegimeTrabalhoDao {
                 "p.id_funcionario, p.nome_funcionario, p.cpf_funcionario, p.cargo_funcionario " +
                 "FROM PESQUISA_REGIME_TRABALHO co " +
                 "LEFT JOIN FUNCIONARIO p ON co.id_funcionario = p.id_funcionario " +
-                "ORDER BY co.DATA_CONSULTA DESC";
+                "ORDER BY co.ID_pesquisa DESC";
 
         try (Connection conexao = dataSource.getConnection();
              PreparedStatement ps = conexao.prepareStatement(sql);
@@ -90,7 +92,7 @@ public class PesquisaRegimeTrabalhoDao {
         PesquisaRegimeTrabalho pesquisa = new PesquisaRegimeTrabalho();
 
 
-        pesquisa.setId_pesquisa(rs.getInt("ID_PESUISA   "));
+        pesquisa.setId_pesquisa(rs.getInt("ID_PESQUISA"));
 
         pesquisa.setSatisfacao(rs.getInt("SATISFACAO"));
         pesquisa.setComentario(rs.getString("COMENTARIO"));
@@ -110,11 +112,11 @@ public class PesquisaRegimeTrabalhoDao {
      */
     public PesquisaRegimeTrabalho buscarPorIdPesquisa(int id) {
         String sql = "SELECT " +
-                "co.ID_pesquisa, co.satisfacao, co.regime_trabalho, co.comentario, " +
+                "co.ID_PESQUISA, co.satisfacao, co.regime_trabalho, co.comentario, " +
                 "p.id_funcionario, p.nome_funcionario, p.cpf_funcionario, p.cargo_funcionario " +
                 "FROM PESQUISA_REGIME_TRABALHO co " +
                 "LEFT JOIN FUNCIONARIO p ON co.id_funcionario = p.id_funcionario " +
-                "ORDER BY co.DATA_CONSULTA DESC";
+                "WHERE co.ID_PESQUISA = ?";
 
         try (Connection conexao = dataSource.getConnection();
              PreparedStatement ps = conexao.prepareStatement(sql)) {
@@ -157,7 +159,7 @@ public class PesquisaRegimeTrabalhoDao {
                 throw new IllegalArgumentException("ID do funcionario é obrigatório");
             }
 
-            //ps.setInt(7, consultaOnline.getIdConsulta());
+            ps.setInt(5, pesquisaRegimeTrabalho.getId_pesquisa());
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
