@@ -35,7 +35,7 @@ public class FuncionarioDao {
         try {
             conexao = dataSource.getConnection();
 
-            String[] generatedColumns = {"id_paciente"};
+            String[] generatedColumns = {"id_funcionario"};
             comandoSQL = conexao.prepareStatement(
                     "INSERT INTO FUNCIONARIO(nome_funcionario, cpf_funcionario, cargo_funcionario) " +
                             "VALUES (?, ?, ?, ?)",
