@@ -24,8 +24,15 @@ public class FuncionarioDao {
      * @param funcionario
      */
     public void cadastrarFun(Funcionario funcionario){
-        if (!funcionario.isCpfValido()) {
-            throw new IllegalArgumentException("CPF inválido: deve ter exatamente 11 dígitos");
+        // Validações iniciais
+        if (funcionario.getNome() == null || funcionario.getNome().trim().isEmpty()) {
+            throw new IllegalArgumentException("Nome do funcionário é obrigatório");
+        }
+        if (funcionario.getCpf() == null || !funcionario.getCpf().matches("\\d{11}")) {
+            throw new IllegalArgumentException("CPF inválido: deve ter exatamente 11 dígitos numéricos");
+        }
+        if (funcionario.getCargo() == null || funcionario.getCargo().trim().isEmpty()) {
+            throw new IllegalArgumentException("Cargo do funcionário é obrigatório");
         }
 
         Connection conexao = null;
@@ -38,19 +45,15 @@ public class FuncionarioDao {
             String[] generatedColumns = {"id_funcionario"};
             comandoSQL = conexao.prepareStatement(
                     "INSERT INTO FUNCIONARIO(nome_funcionario, cpf_funcionario, cargo_funcionario) " +
-                            "VALUES (?, ?, ?)", // Remover o ? extra de cargo
+                            "VALUES (?, ?, ?)",
                     generatedColumns);
 
-            String cpf = funcionario.getCpf();
-            if (cpf == null || !cpf.matches("\\d{11}")) {
-                throw new IllegalArgumentException("CPF deve conter exatamente 11 dígitos numéricos: " + cpf);
-            }
-
-            System.out.println("Cadastrando Funcionario: Nome=" + funcionario.getNome() + ", CPF=" + cpf);
+            System.out.println("Cadastrando Funcionario: Nome=" + funcionario.getNome() +
+                    ", CPF=" + funcionario.getCpf() + ", Cargo=" + funcionario.getCargo());
 
             comandoSQL.setString(1, funcionario.getNome());
-            comandoSQL.setString(2, cpf);
-            comandoSQL.setString(3, funcionario.getCargo()); // Garantir que cargo não seja null
+            comandoSQL.setString(2, funcionario.getCpf());
+            comandoSQL.setString(3, funcionario.getCargo());
 
             int affectedRows = comandoSQL.executeUpdate();
 
@@ -61,12 +64,10 @@ public class FuncionarioDao {
             generatedKeys = comandoSQL.getGeneratedKeys();
             if (generatedKeys != null && generatedKeys.next()) {
                 try {
-
                     int generatedId = generatedKeys.getInt(1);
                     funcionario.setId(generatedId);
                     System.out.println("Funcionario cadastrado com sucesso. ID gerado: " + generatedId);
                 } catch (SQLException e) {
-
                     try {
                         String generatedIdStr = generatedKeys.getString(1);
                         if (generatedIdStr != null) {
@@ -87,7 +88,6 @@ public class FuncionarioDao {
             System.out.println("Erro SQL ao cadastrar funcionario: " + e.getMessage());
             throw new RuntimeException("Erro ao cadastrar o funcionario: " + funcionario.getNome(), e);
         } finally {
-
             try {
                 if (generatedKeys != null) generatedKeys.close();
                 if (comandoSQL != null) comandoSQL.close();
@@ -97,7 +97,6 @@ public class FuncionarioDao {
             }
         }
     }
-
     /**
      * Lista todos os Funcionario
      */
@@ -113,6 +112,7 @@ public class FuncionarioDao {
                 funcionario.setId(rs.getInt("id_funcionario"));
                 funcionario.setNome(rs.getString("nome_funcionario"));
                 funcionario.setCpf(rs.getString("cpf_funcionario"));
+                funcionario.setCargo(rs.getString("cargo_funcionario"));
 
                 funcionarios.add(funcionario);
             }
@@ -145,6 +145,7 @@ public class FuncionarioDao {
                     funcionario.setId(rs.getInt("id_funcionario"));
                     funcionario.setNome(rs.getString("nome_funcionario"));
                     funcionario.setCpf(rs.getString("cpf_funcionario"));
+                    funcionario.setCargo(rs.getString("cargo_funcionario"));
 
                     System.out.println("Funcionario encontrado: ID=" + id + ", Nome=" + funcionario.getNome());
                 } else {
@@ -183,8 +184,9 @@ public class FuncionarioDao {
 
             ps.setString(1, funcionario.getNome());
             ps.setString(2, cpf);
-            ps.setInt(3, funcionario.getId());
-            ps.setString(4, funcionario.getCargo());
+            ps.setString(3, funcionario.getCargo());
+            ps.setInt(4, funcionario.getId());
+
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected > 0) {

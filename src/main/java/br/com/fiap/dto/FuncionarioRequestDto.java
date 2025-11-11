@@ -1,24 +1,38 @@
+
 package br.com.fiap.dto;
 
-public class FuncionarioRequestDto {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+public class FuncionarioRequestDto {
+    @JsonProperty("id_funcionario")
     private Integer id;
+
+    @JsonProperty("nome_funcionario")
     private String nome;
+
+    @JsonProperty("cpf_funcionario")
     private String cpf;
+
+    @JsonProperty("cargo_funcionario")
     private String cargo;
 
     // Construtor vazio
     public FuncionarioRequestDto() {
     }
 
-    // Construtor com parâmetros
-
-
-    public FuncionarioRequestDto(String cargo, String cpf, String nome, Integer id) {
-        this.cargo = cargo;
-        this.cpf = cpf;
-        this.nome = nome;
+    // Construtor com parâmetros (incluindo ID)
+    public FuncionarioRequestDto(Integer id, String nome, String cpf, String cargo) {
         this.id = id;
+        this.nome = nome;
+        this.cpf = cpf;
+        this.cargo = cargo;
+    }
+
+    // Construtor sem ID (para cadastro)
+    public FuncionarioRequestDto(String nome, String cpf, String cargo) {
+        this.nome = nome;
+        this.cpf = cpf;
+        this.cargo = cargo;
     }
 
     // Getters e Setters
@@ -54,16 +68,9 @@ public class FuncionarioRequestDto {
         this.cargo = cargo;
     }
 
-    @Override
-    public String toString() {
-        return "FuncionarioRequestDto{" +
-                "nome='" + nome + '\'' +
-                ", cpf='" + cpf + '\'' +
-                ", cargo='" + cargo + '\'' +
-                '}';
-    }
-
-
+    /**
+     * Valida se o CPF tem exatamente 11 dígitos numéricos
+     */
     public boolean isCpfValido() {
         return cpf != null && cpf.matches("\\d{11}");
     }
@@ -73,7 +80,8 @@ public class FuncionarioRequestDto {
      */
     public boolean isValid() {
         return nome != null && !nome.trim().isEmpty() &&
-                cpf != null && isCpfValido();
+                cpf != null && isCpfValido() &&
+                cargo != null && !cargo.trim().isEmpty();
     }
 
     /**
@@ -84,7 +92,34 @@ public class FuncionarioRequestDto {
             nome = nome.trim();
         }
         if (cpf != null) {
-            cpf = cpf.trim().replaceAll("[^\\d]", "");
+            cpf = cpf.trim().replaceAll("[^\\d]", ""); // Remove tudo que não é dígito
         }
+        if (cargo != null) {
+            cargo = cargo.trim();
+        }
+    }
+
+    /**
+     * Método de debug para verificar os dados
+     */
+    public void printDebug() {
+        System.out.println("=== DEBUG FuncionarioRequestDto ===");
+        System.out.println("ID: " + id);
+        System.out.println("Nome (nome_funcionario): '" + nome + "'");
+        System.out.println("CPF (cpf_funcionario): '" + cpf + "'");
+        System.out.println("Cargo (cargo_funcionario): '" + cargo + "'");
+        System.out.println("CPF válido: " + isCpfValido());
+        System.out.println("isValid(): " + isValid());
+        System.out.println("===============================");
+    }
+
+    @Override
+    public String toString() {
+        return "FuncionarioRequestDto{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", cpf='" + cpf + '\'' +
+                ", cargo='" + cargo + '\'' +
+                '}';
     }
 }

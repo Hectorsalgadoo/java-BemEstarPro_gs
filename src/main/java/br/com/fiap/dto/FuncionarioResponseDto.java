@@ -1,11 +1,10 @@
+
 package br.com.fiap.dto;
+
 import br.com.fiap.models.Funcionario;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-/**
- * DTO para resposta de paciente (sem relação com ConsultaOnline)
- */
 @XmlRootElement
 public class FuncionarioResponseDto {
 
@@ -21,9 +20,11 @@ public class FuncionarioResponseDto {
     @JsonProperty("cargo_funcionario")
     private String cargo_funcionario;
 
+    // Construtor vazio
     public FuncionarioResponseDto() {
     }
 
+    // Construtor com parâmetros
     public FuncionarioResponseDto(Integer id_funcionario, String nome_funcionario, String cpf_funcionario, String cargo_funcionario) {
         this.id_funcionario = id_funcionario;
         this.nome_funcionario = nome_funcionario;
@@ -41,10 +42,10 @@ public class FuncionarioResponseDto {
 
         return new FuncionarioResponseDto(
                 funcionario.getId(),
-                funcionario.getNome(),
-                funcionario.getCpf(),
-                funcionario.getCargo()
-                );
+                funcionario.getNome(),      // Mapeia para nome_funcionario
+                funcionario.getCpf(),       // Mapeia para cpf_funcionario
+                funcionario.getCargo()      // Mapeia para cargo_funcionario
+        );
     }
 
     /**
@@ -63,21 +64,13 @@ public class FuncionarioResponseDto {
         return funcionario;
     }
 
-
-    public String getCargo_funcionario() {
-        return cargo_funcionario;
+    // Getters e Setters
+    public Integer getId_funcionario() {
+        return id_funcionario;
     }
 
-    public void setCargo_funcionario(String cargo_funcionario) {
-        this.cargo_funcionario = cargo_funcionario;
-    }
-
-    public String getCpf_funcionario() {
-        return cpf_funcionario;
-    }
-
-    public void setCpf_funcionario(String cpf_funcionario) {
-        this.cpf_funcionario = cpf_funcionario;
+    public void setId_funcionario(Integer id_funcionario) {
+        this.id_funcionario = id_funcionario;
     }
 
     public String getNome_funcionario() {
@@ -88,12 +81,20 @@ public class FuncionarioResponseDto {
         this.nome_funcionario = nome_funcionario;
     }
 
-    public Integer getId_funcionario() {
-        return id_funcionario;
+    public String getCpf_funcionario() {
+        return cpf_funcionario;
     }
 
-    public void setId_funcionario(Integer id_funcionario) {
-        this.id_funcionario = id_funcionario;
+    public void setCpf_funcionario(String cpf_funcionario) {
+        this.cpf_funcionario = cpf_funcionario;
+    }
+
+    public String getCargo_funcionario() {
+        return cargo_funcionario;
+    }
+
+    public void setCargo_funcionario(String cargo_funcionario) {
+        this.cargo_funcionario = cargo_funcionario;
     }
 
     @Override

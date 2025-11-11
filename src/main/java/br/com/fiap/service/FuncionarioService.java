@@ -1,3 +1,4 @@
+
 package br.com.fiap.service;
 
 import br.com.fiap.dao.FuncionarioDao;
@@ -10,9 +11,6 @@ import jakarta.ws.rs.NotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Serviço para o funcionario
- */
 @ApplicationScoped
 public class FuncionarioService {
 
@@ -29,12 +27,12 @@ public class FuncionarioService {
                     .map(FuncionarioResponseDto::convertToDto)
                     .collect(Collectors.toList());
 
-            System.out.println("Listados " + response.size() + " funcionario");
+            System.out.println("Listados " + response.size() + " funcionarios");
             return response;
 
         } catch (Exception e) {
-            System.err.println("Erro ao listar os Funcionario: " + e.getMessage());
-            throw new RuntimeException("Erro ao listar os Funcionario", e);
+            System.err.println("Erro ao listar os Funcionarios: " + e.getMessage());
+            throw new RuntimeException("Erro ao listar os Funcionarios", e);
         }
     }
 
@@ -49,11 +47,11 @@ public class FuncionarioService {
         try {
             Funcionario funcionario = funcionarioDao.buscarPorIdFuncionario(id);
             if (funcionario == null || funcionario.getId() == null) {
-                throw new NotFoundException("funcionario com ID " + id + " não encontrado");
+                throw new NotFoundException("Funcionario com ID " + id + " não encontrado");
             }
 
             FuncionarioResponseDto response = FuncionarioResponseDto.convertToDto(funcionario);
-            System.out.println("funcionario encontrado: ID=" + id);
+            System.out.println("Funcionario encontrado: ID=" + id);
             return response;
 
         } catch (NotFoundException e) {
@@ -73,31 +71,38 @@ public class FuncionarioService {
         }
 
         try {
-            Funcionario paciente = funcionarioDao.buscarPorCpf(cpf);
-            if (paciente == null || paciente.getId() == null) {
+            Funcionario funcionario = funcionarioDao.buscarPorCpf(cpf);
+            if (funcionario == null || funcionario.getId() == null) {
                 return null;
             }
 
-            FuncionarioResponseDto response = FuncionarioResponseDto.convertToDto(paciente);
+            FuncionarioResponseDto response = FuncionarioResponseDto.convertToDto(funcionario);
             System.out.println("Funcionario encontrado por CPF: " + cpf);
             return response;
 
         } catch (Exception e) {
             System.err.println("Erro ao buscar o funcionario CPF " + cpf + ": " + e.getMessage());
-            throw new RuntimeException("Erro ao buscar o paciente por CPF", e);
+            throw new RuntimeException("Erro ao buscar o funcionario por CPF", e);
         }
     }
 
     /**
-     * Cadastra novo paciente (ID gerado automaticamente) - VERSÃO CORRIGIDA
+     * Cadastra novo funcionario - VERSÃO CORRIGIDA
      */
     public FuncionarioResponseDto cadastrar(FuncionarioRequestDto funcionarioDto) {
-
         if (funcionarioDto == null) {
             throw new IllegalArgumentException("Dados do funcionario não podem ser nulos");
         }
 
+        // Debug: verifique o que está chegando
+        System.out.println("=== DTO RECEBIDO NO SERVICE ===");
+        System.out.println("Nome: " + funcionarioDto.getNome());
+        System.out.println("CPF: " + funcionarioDto.getCpf());
+        System.out.println("Cargo: " + funcionarioDto.getCargo());
+        System.out.println("===============================");
+
         funcionarioDto.cleanData();
+
         if (!funcionarioDto.isValid()) {
             throw new IllegalArgumentException("Dados do Funcionario inválidos ou incompletos");
         }
@@ -111,15 +116,16 @@ public class FuncionarioService {
             Funcionario funcionario = new Funcionario();
             funcionario.setNome(funcionarioDto.getNome());
             funcionario.setCpf(funcionarioDto.getCpf());
+            funcionario.setCargo(funcionarioDto.getCargo()); // LINHA CORRIGIDA - estava faltando
 
-            System.out.println("Tentando cadastrar o funcionario: " + funcionario.getNome() + ", CPF: " + funcionario.getCpf());
-
+            System.out.println("Tentando cadastrar o funcionario: " +
+                    funcionario.getNome() + ", CPF: " + funcionario.getCpf() +
+                    ", Cargo: " + funcionario.getCargo());
 
             funcionarioDao.cadastrarFun(funcionario);
 
-
             if (funcionario.getId() == null) {
-                throw new RuntimeException("Falha ao obter ID gerado para o paciente");
+                throw new RuntimeException("Falha ao obter ID gerado para o funcionario");
             }
 
             FuncionarioResponseDto response = FuncionarioResponseDto.convertToDto(funcionario);
@@ -136,17 +142,15 @@ public class FuncionarioService {
     }
 
     /**
-     * Atualiza paciente existente
+     * Atualiza funcionario existente - VERSÃO CORRIGIDA
      */
     public void atualizar(FuncionarioRequestDto funcionarioDto) {
-
         if (funcionarioDto == null) {
-            throw new IllegalArgumentException("Dados do paciente não podem ser nulos");
+            throw new IllegalArgumentException("Dados do funcionario não podem ser nulos");
         }
         if (funcionarioDto.getId() == null || funcionarioDto.getId() <= 0) {
             throw new IllegalArgumentException("ID do funcionario deve ser positivo para atualização");
         }
-
 
         funcionarioDto.cleanData();
         if (!funcionarioDto.isValid()) {
@@ -154,12 +158,10 @@ public class FuncionarioService {
         }
 
         try {
-
             Funcionario funcionarioExistente = funcionarioDao.buscarPorIdFuncionario(funcionarioDto.getId());
             if (funcionarioExistente == null || funcionarioExistente.getId() == null) {
                 throw new NotFoundException("Funcionario com ID " + funcionarioDto.getId() + " não encontrado para atualização");
             }
-
 
             if (!funcionarioExistente.getCpf().equals(funcionarioDto.getCpf())) {
                 Funcionario funcionarioComCpf = funcionarioDao.buscarPorCpf(funcionarioDto.getCpf());
@@ -168,14 +170,11 @@ public class FuncionarioService {
                 }
             }
 
-
             Funcionario funcionario = new Funcionario();
             funcionario.setId(funcionarioDto.getId());
             funcionario.setNome(funcionarioDto.getNome());
             funcionario.setCpf(funcionarioDto.getCpf());
-            funcionario.setCargo(funcionario.getCargo());
-
-
+            funcionario.setCargo(funcionarioDto.getCargo());
             funcionarioDao.atualizaFuncionario(funcionario);
             System.out.println("Funcionario atualizado com sucesso: ID=" + funcionarioDto.getId());
 
@@ -190,7 +189,7 @@ public class FuncionarioService {
     }
 
     /**
-     * Exclui paciente por ID
+     * Exclui funcionario por ID
      */
     public void excluir(int id) {
         if (id <= 0) {
@@ -198,26 +197,24 @@ public class FuncionarioService {
         }
 
         try {
-
             Funcionario funcionario = funcionarioDao.buscarPorIdFuncionario(id);
             if (funcionario == null || funcionario.getId() == null) {
                 throw new NotFoundException("Funcionario com ID " + id + " não encontrado para exclusão");
             }
 
-
             funcionarioDao.excluirFuncionario(id);
-            System.out.println("Funcioario excluído com sucesso: ID=" + id);
+            System.out.println("Funcionario excluído com sucesso: ID=" + id);
 
         } catch (NotFoundException e) {
             throw e;
         } catch (Exception e) {
-            System.err.println("Erro ao excluir o Funcioario ID " + id + ": " + e.getMessage());
+            System.err.println("Erro ao excluir o Funcionario ID " + id + ": " + e.getMessage());
 
             if (e.getMessage().contains("constraint") || e.getMessage().contains("foreign key")) {
-                throw new RuntimeException("Não é possível excluir o Funcioario: existem registros relacionados", e);
+                throw new RuntimeException("Não é possível excluir o Funcionario: existem registros relacionados", e);
             }
 
-            throw new RuntimeException("Erro ao excluir paciente", e);
+            throw new RuntimeException("Erro ao excluir funcionario", e);
         }
     }
 }
