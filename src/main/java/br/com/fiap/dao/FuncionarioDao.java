@@ -38,7 +38,7 @@ public class FuncionarioDao {
             String[] generatedColumns = {"id_funcionario"};
             comandoSQL = conexao.prepareStatement(
                     "INSERT INTO FUNCIONARIO(nome_funcionario, cpf_funcionario, cargo_funcionario) " +
-                            "VALUES (?, ?, ?, ?)",
+                            "VALUES (?, ?, ?)", // Remover o ? extra de cargo
                     generatedColumns);
 
             String cpf = funcionario.getCpf();
@@ -50,7 +50,7 @@ public class FuncionarioDao {
 
             comandoSQL.setString(1, funcionario.getNome());
             comandoSQL.setString(2, cpf);
-            comandoSQL.setString(3, funcionario.getCargo());
+            comandoSQL.setString(3, funcionario.getCargo()); // Garantir que cargo não seja null
 
             int affectedRows = comandoSQL.executeUpdate();
 
