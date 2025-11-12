@@ -1,6 +1,5 @@
 package br.com.fiap.dto;
 
-import br.com.fiap.models.PesquisaRegimeTrabalho;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -8,18 +7,14 @@ public class RelatorioRequestDto {
     private Integer id_funcionario;
     private Integer id_pesquisa;
     private String resumo_feedback;
-    private PesquisaRegimeTrabalho pesquisaRegimeTrabalho;
-
-
 
     public RelatorioRequestDto() {
     }
 
-    public RelatorioRequestDto(Integer id_funcionario, PesquisaRegimeTrabalho pesquisaRegimeTrabalho, String resumo_feedback, Integer id_pesquisa) {
+    public RelatorioRequestDto(Integer id_funcionario, Integer id_pesquisa, String resumo_feedback) {
         this.id_funcionario = id_funcionario;
-        this.pesquisaRegimeTrabalho = pesquisaRegimeTrabalho;
-        this.resumo_feedback = resumo_feedback;
         this.id_pesquisa = id_pesquisa;
+        this.resumo_feedback = resumo_feedback;
     }
 
     public Integer getId_funcionario() {
@@ -30,12 +25,12 @@ public class RelatorioRequestDto {
         this.id_funcionario = id_funcionario;
     }
 
-    public PesquisaRegimeTrabalho getPesquisaRegimeTrabalho() {
-        return pesquisaRegimeTrabalho;
+    public Integer getId_pesquisa() {
+        return id_pesquisa;
     }
 
-    public void setPesquisaRegimeTrabalho(PesquisaRegimeTrabalho pesquisaRegimeTrabalho) {
-        this.pesquisaRegimeTrabalho = pesquisaRegimeTrabalho;
+    public void setId_pesquisa(Integer id_pesquisa) {
+        this.id_pesquisa = id_pesquisa;
     }
 
     public String getResumo_feedback() {
@@ -44,14 +39,6 @@ public class RelatorioRequestDto {
 
     public void setResumo_feedback(String resumo_feedback) {
         this.resumo_feedback = resumo_feedback;
-    }
-
-    public Integer getId_pesquisa() {
-        return id_pesquisa;
-    }
-
-    public void setId_pesquisa(Integer id_pesquisa) {
-        this.id_pesquisa = id_pesquisa;
     }
 
     public void cleanData() {
@@ -70,17 +57,12 @@ public class RelatorioRequestDto {
         if (resumo_feedback == null || resumo_feedback.isEmpty()) {
             throw new IllegalArgumentException("Resumo do feedback é obrigatório.");
         }
-
-        if (pesquisaRegimeTrabalho == null) {
-            throw new IllegalArgumentException("Pesquisa Regime de Trabalho é obrigatório.");
-        }
     }
 
     public boolean isValid() {
         return id_funcionario != null && id_funcionario > 0
                 && id_pesquisa != null && id_pesquisa > 0
-                && resumo_feedback != null && !resumo_feedback.isEmpty()
-                && pesquisaRegimeTrabalho != null;
+                && resumo_feedback != null && !resumo_feedback.isEmpty();
     }
 
     @Override
@@ -91,5 +73,4 @@ public class RelatorioRequestDto {
                 ", resumo_feedback='" + resumo_feedback + '\'' +
                 '}';
     }
-
 }

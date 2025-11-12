@@ -95,7 +95,7 @@ public class RelatorioResource {
             relatorio.setResumo_feedback(relatorioDto.getResumo_feedback());
             relatorio.setId_pesquisa(relatorioDto.getId_pesquisa());
             relatorio.setFuncionario(funcionario);
-            relatorio.setPesquisaRegimeTrabalho(relatorioDto.getPesquisaRegimeTrabalho());
+
 
 
             Relatorio relatorioCadastrado = relatorioDao.cadastrarRelatorio(relatorio);

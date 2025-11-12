@@ -26,9 +26,6 @@ public class RelatorioService {
     @Inject
     private FuncionarioDao funcionarioDao;
 
-    @Inject
-    private PesquisaRegimeTrabalho pesquisaRegimeTrabalho;
-
     public List<RelatorioResponseDto> listar() {
         List<Relatorio> relatorio = relatorioDao.listRelatorio();
         return relatorio.stream()
@@ -66,7 +63,6 @@ public class RelatorioService {
         relatorio.setFuncionario(funcionario);
         relatorio.setResumo_feedback(relatorioDto.getResumo_feedback());
         relatorio.setId_pesquisa(relatorioDto.getId_pesquisa());
-        relatorio.setPesquisaRegimeTrabalho(relatorioDto.getPesquisaRegimeTrabalho());
 
         try {
             relatorioDao.cadastrarRelatorio(relatorio);
@@ -104,7 +100,6 @@ public class RelatorioService {
         relatorio.setFuncionario(funcionario);
         relatorio.setResumo_feedback(relatorioDto.getResumo_feedback());
         relatorio.setId_pesquisa(relatorioDto.getId_pesquisa());
-        relatorio.setPesquisaRegimeTrabalho(relatorioDto.getPesquisaRegimeTrabalho());
 
         relatorioDao.atualizar(relatorio);
         System.out.println(" Relatório atualizado com sucesso!");
