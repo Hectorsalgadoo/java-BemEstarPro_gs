@@ -168,7 +168,6 @@ public class FuncionarioResource {
                         .build();
             }
 
-            // Limpar e validar dados
             funcionarioDto.cleanData();
             if (!funcionarioDto.isValid()) {
                 return Response.status(Response.Status.BAD_REQUEST)

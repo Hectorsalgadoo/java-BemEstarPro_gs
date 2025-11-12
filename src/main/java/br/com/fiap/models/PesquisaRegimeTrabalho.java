@@ -1,11 +1,12 @@
 package br.com.fiap.models;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * Modelo de  pesquisa de regime de trabalho
  */
-@XmlRootElement
+@ApplicationScoped
 public class PesquisaRegimeTrabalho {
 
     private int id_pesquisa;
