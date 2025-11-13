@@ -1,6 +1,0 @@
-br\com\fiap\models\Atividade.class
-br\com\fiap\dto\AtividadeResponseDto.class
-br\com\fiap\dto\AtividadeRequestDto.class
-br\com\fiap\resource\AtividadeResource.class
-br\com\fiap\dao\AtividadeDao.class
-br\com\fiap\service\AtividadeService.class
