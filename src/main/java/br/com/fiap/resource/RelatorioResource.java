@@ -17,20 +17,23 @@ import java.util.List;
 public class RelatorioResource {
 
     @Inject
-    private FuncionarioDao funcionarioDao;
+    FuncionarioDao funcionarioDao;
 
     @Inject
-    private RelatorioService relatorioService;
+    RelatorioService relatorioService;
 
     @Inject
-    private RelatorioDao relatorioDao;
+    RelatorioDao relatorioDao;
 
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
     public Response listar() {
         try {
+
             List<RelatorioResponseDto> relatorio = relatorioService.listar();
             return Response.ok(relatorio).build();
         } catch (Exception e) {
+
             System.err.println("Erro ao listar os relatorios: " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("Erro interno ao listar os relatorios")

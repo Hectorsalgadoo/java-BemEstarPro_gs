@@ -18,7 +18,7 @@ import jakarta.ws.rs.Path;
 public class FuncionarioResource {
 
     @Inject
-    private FuncionarioService funcionarioService;
+    FuncionarioService funcionarioService;
 
     /**
      * Lista todos os pacientes

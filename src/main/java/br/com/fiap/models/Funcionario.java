@@ -52,7 +52,6 @@ public class Funcionario {
         this.id = id;
     }
 
-    // Métodos utilitários
     public boolean isCpfValido() {
         return cpf != null && cpf.matches("\\d{11}");
     }
