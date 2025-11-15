@@ -2,10 +2,12 @@ package br.com.fiap.resource;
 
 import br.com.fiap.dao.FuncionarioDao;
 import br.com.fiap.dao.RelatorioDao;
-import br.com.fiap.dto.*;
+import br.com.fiap.dto.RelatorioRequestDto;
+import br.com.fiap.dto.RelatorioResponseDto;
 import br.com.fiap.models.Funcionario;
 import br.com.fiap.models.Relatorio;
 import br.com.fiap.service.RelatorioService;
+
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
@@ -29,14 +31,12 @@ public class RelatorioResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listar() {
         try {
-
-            List<RelatorioResponseDto> relatorio = relatorioService.listar();
-            return Response.ok(relatorio).build();
+            List<RelatorioResponseDto> relatorios = relatorioService.listar();
+            return Response.ok(relatorios).build();
         } catch (Exception e) {
-
-            System.err.println("Erro ao listar os relatorios: " + e.getMessage());
+            System.err.println("Erro ao listar relatórios: " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Erro interno ao listar os relatorios")
+                    .entity("Erro interno ao listar relatórios")
                     .build();
         }
     }
@@ -46,23 +46,16 @@ public class RelatorioResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response buscarPorId(@PathParam("id") int id) {
         try {
-            if (id <= 0) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("ID do relatorio deve ser positivo")
-                        .build();
-            }
-
             RelatorioResponseDto relatorio = relatorioService.buscarPorId(id);
             return Response.ok(relatorio).build();
-
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Relatorio não encontrado com ID: " + id)
+                    .entity("Relatório não encontrado com ID: " + id)
                     .build();
         } catch (Exception e) {
-            System.err.println("Erro ao buscar o relatorio ID " + id + ": " + e.getMessage());
+            System.err.println("Erro ao buscar relatório ID " + id + ": " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Erro interno ao buscar o relatorio")
+                    .entity("Erro interno ao buscar relatório")
                     .build();
         }
     }
@@ -80,11 +73,6 @@ public class RelatorioResource {
             }
 
             relatorioDto.cleanData();
-            if (!relatorioDto.isValid()) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("Dados do relatório inválidos ou incompletos")
-                        .build();
-            }
 
             Funcionario funcionario = funcionarioDao.buscarPorIdFuncionario(relatorioDto.getId_funcionario());
             if (funcionario == null) {
@@ -96,33 +84,26 @@ public class RelatorioResource {
             Relatorio relatorio = new Relatorio();
             relatorio.setId_funcionario(relatorioDto.getId_funcionario());
             relatorio.setResumo_feedback(relatorioDto.getResumo_feedback());
-            relatorio.setId_pesquisa(relatorioDto.getId_pesquisa());
+            relatorio.setNivel_bem_estar(relatorioDto.getNivel_bem_estar());
+            relatorio.setTendencias_humor(relatorioDto.getTendencias_humor());
             relatorio.setFuncionario(funcionario);
-
-
 
             Relatorio relatorioCadastrado = relatorioDao.cadastrarRelatorio(relatorio);
 
-
-            UriBuilder builder = uriInfo.getAbsolutePathBuilder();
-            builder.path(Integer.toString(relatorioCadastrado.getId_relatorio()));
-            URI location = builder.build();
+            URI location = uriInfo.getAbsolutePathBuilder()
+                    .path(Integer.toString(relatorioCadastrado.getId_relatorio()))
+                    .build();
 
             return Response.created(location)
-                    .entity(relatorioCadastrado)
+                    .entity(RelatorioResponseDto.convertToDto(relatorioCadastrado))
                     .build();
 
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Dados inválidos: " + e.getMessage())
                     .build();
+
         } catch (RuntimeException e) {
-            if (e.getMessage().contains("constraint") || e.getMessage().contains("duplicate") ||
-                    e.getMessage().contains("unique") || e.getMessage().contains("CPF")) {
-                return Response.status(Response.Status.CONFLICT)
-                        .entity("Conflito de dados: CPF já cadastrado")
-                        .build();
-            }
             System.err.println("Erro ao cadastrar relatório: " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("Erro interno ao cadastrar relatório")
@@ -134,24 +115,26 @@ public class RelatorioResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response atualizar(RelatorioRequestDto relatoriodto, @PathParam("id") int id) {
+    public Response atualizar(RelatorioRequestDto relatorioDto, @PathParam("id") int id) {
         try {
-            relatorioService.atualizar(relatoriodto, id);
+            relatorioService.atualizar(relatorioDto, id);
+            RelatorioResponseDto atualizado = relatorioService.buscarPorId(id);
+            return Response.ok(atualizado).build();
 
-            RelatorioResponseDto atualizar = relatorioService.buscarPorId(id);
-            return Response.ok(atualizar).build();
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Relatorio não encontrada com ID: " + id + " para atualização")
+                    .entity("Relatório não encontrado com ID: " + id)
                     .build();
+
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Dados inválidos: " + e.getMessage())
                     .build();
+
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Erro interno ao atualizar o relatorio")
+                    .entity("Erro interno ao atualizar relatório")
                     .build();
         }
     }
@@ -164,7 +147,7 @@ public class RelatorioResource {
             return Response.noContent().build();
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Relatorio não encontrada com ID: " + id + " para exclusão")
+                    .entity("Relatório não encontrado com ID: " + id)
                     .build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -173,15 +156,8 @@ public class RelatorioResource {
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Erro interno ao excluir o relatorio")
+                    .entity("Erro interno ao excluir relatório")
                     .build();
         }
     }
-
-
-
-
-
-
-
 }

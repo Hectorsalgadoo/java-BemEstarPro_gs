@@ -7,46 +7,11 @@ public class Relatorio {
     private int id_funcionario;
     private PesquisaRegimeTrabalho pesquisaRegimeTrabalho;
     private int id_pesquisa;
-    private String resumo_feedback   ;
+    private String resumo_feedback;
+    private String nivel_bem_estar;
+    private String tendencias_humor;
 
-    public String getResumo_feedback() {
-        return resumo_feedback;
-    }
-
-    public void setResumo_feedback(String resumo_feedback) {
-        this.resumo_feedback = resumo_feedback;
-    }
-
-    public int getId_pesquisa() {
-        return id_pesquisa;
-    }
-
-    public void setId_pesquisa(int id_pesquisa) {
-        this.id_pesquisa = id_pesquisa;
-    }
-
-    public PesquisaRegimeTrabalho getPesquisaRegimeTrabalho() {
-        return pesquisaRegimeTrabalho;
-    }
-
-    public void setPesquisaRegimeTrabalho(PesquisaRegimeTrabalho pesquisaRegimeTrabalho) {
-        this.pesquisaRegimeTrabalho = pesquisaRegimeTrabalho;
-    }
-
-    public int getId_funcionario() {
-        return id_funcionario;
-    }
-
-    public void setId_funcionario(int id_funcionario) {
-        this.id_funcionario = id_funcionario;
-    }
-
-    public Funcionario getFuncionario() {
-        return funcionario;
-    }
-
-    public void setFuncionario(Funcionario funcionario) {
-        this.funcionario = funcionario;
+    public Relatorio() {
     }
 
     public int getId_relatorio() {
@@ -57,16 +22,60 @@ public class Relatorio {
         this.id_relatorio = id_relatorio;
     }
 
-    public Relatorio() {
+    public Funcionario getFuncionario() {
+        return funcionario;
     }
 
-    public Relatorio(int id_relatorio, Funcionario funcionario, int id_funcionario, PesquisaRegimeTrabalho pesquisaRegimeTrabalho, int id_pesquisa, String resumo_feedback) {
-        this.id_relatorio = id_relatorio;
+    public void setFuncionario(Funcionario funcionario) {
         this.funcionario = funcionario;
+    }
+
+    public int getId_funcionario() {
+        return id_funcionario;
+    }
+
+    public void setId_funcionario(int id_funcionario) {
         this.id_funcionario = id_funcionario;
+    }
+
+    public PesquisaRegimeTrabalho getPesquisaRegimeTrabalho() {
+        return pesquisaRegimeTrabalho;
+    }
+
+    public void setPesquisaRegimeTrabalho(PesquisaRegimeTrabalho pesquisaRegimeTrabalho) {
         this.pesquisaRegimeTrabalho = pesquisaRegimeTrabalho;
+    }
+
+    public int getId_pesquisa() {
+        return id_pesquisa;
+    }
+
+    public void setId_pesquisa(int id_pesquisa) {
         this.id_pesquisa = id_pesquisa;
+    }
+
+    public String getResumo_feedback() {
+        return resumo_feedback;
+    }
+
+    public void setResumo_feedback(String resumo_feedback) {
         this.resumo_feedback = resumo_feedback;
+    }
+
+    public String getNivel_bem_estar() {
+        return nivel_bem_estar;
+    }
+
+    public void setNivel_bem_estar(String nivel_bem_estar) {
+        this.nivel_bem_estar = nivel_bem_estar;
+    }
+
+    public String getTendencias_humor() {
+        return tendencias_humor;
+    }
+
+    public void setTendencias_humor(String tendencias_humor) {
+        this.tendencias_humor = tendencias_humor;
     }
 
     @Override
@@ -78,6 +87,8 @@ public class Relatorio {
                 ", pesquisaRegimeTrabalho=" + pesquisaRegimeTrabalho +
                 ", id_pesquisa=" + id_pesquisa +
                 ", resumo_feedback='" + resumo_feedback + '\'' +
+                ", nivel_bem_estar='" + nivel_bem_estar + '\'' +
+                ", tendencias_humor='" + tendencias_humor + '\'' +
                 '}';
     }
 }
