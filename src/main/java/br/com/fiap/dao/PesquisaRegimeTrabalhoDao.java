@@ -102,6 +102,7 @@ public class PesquisaRegimeTrabalhoDao {
         funcionario.setId(rs.getInt("ID_Funcionario"));
         funcionario.setNome(rs.getString("NOME_funcionario"));
         funcionario.setCpf(rs.getString("CPF_funcionario"));
+        funcionario.setCargo(rs.getString("CARGO_funcionario"));
         pesquisa.setFuncionario(funcionario);
 
         return pesquisa;
