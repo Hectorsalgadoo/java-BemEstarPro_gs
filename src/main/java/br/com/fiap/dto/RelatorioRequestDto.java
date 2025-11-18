@@ -1,32 +1,41 @@
 package br.com.fiap.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class RelatorioRequestDto {
 
-    private Integer id_funcionario;
+    @JsonProperty("id_funcionario")
+    private int id_funcionario;
+
+    @JsonProperty("id_pesquisa")
+    private int id_pesquisa; // int (0 significa sem pesquisa)
+
+    @JsonProperty("resumo_feedback")
     private String resumo_feedback;
+
+    @JsonProperty("nivel_bem_estar")
     private String nivel_bem_estar;
+
+    @JsonProperty("tendencias_humor")
     private String tendencias_humor;
 
-    public RelatorioRequestDto() {
-    }
-
-    public RelatorioRequestDto(Integer id_funcionario, String resumo_feedback,
-                               String nivel_bem_estar, String tendencias_humor) {
-        this.id_funcionario = id_funcionario;
-        this.resumo_feedback = resumo_feedback;
-        this.nivel_bem_estar = nivel_bem_estar;
-        this.tendencias_humor = tendencias_humor;
-    }
-
-    public Integer getId_funcionario() {
+    // Getters e Setters
+    public int getId_funcionario() {
         return id_funcionario;
     }
 
-    public void setId_funcionario(Integer id_funcionario) {
+    public void setId_funcionario(int id_funcionario) {
         this.id_funcionario = id_funcionario;
+    }
+
+    public int getId_pesquisa() {
+        return id_pesquisa;
+    }
+
+    public void setId_pesquisa(int id_pesquisa) {
+        this.id_pesquisa = id_pesquisa;
     }
 
     public String getResumo_feedback() {
@@ -53,36 +62,20 @@ public class RelatorioRequestDto {
         this.tendencias_humor = tendencias_humor;
     }
 
-    public void cleanData() {
-
-        if (id_funcionario == null || id_funcionario <= 0) {
-            throw new IllegalArgumentException("ID do funcionário é obrigatório e deve ser maior que zero.");
-        }
-
-        if (resumo_feedback == null || resumo_feedback.trim().isEmpty()) {
-            throw new IllegalArgumentException("Resumo do feedback é obrigatório.");
-        }
-
-        if (nivel_bem_estar == null || nivel_bem_estar.trim().isEmpty()) {
-            throw new IllegalArgumentException("Nível de bem-estar é obrigatório.");
-        }
-
-        if (tendencias_humor == null || tendencias_humor.trim().isEmpty()) {
-            throw new IllegalArgumentException("Tendências de humor são obrigatórias.");
-        }
-
-        resumo_feedback = resumo_feedback.trim();
-        nivel_bem_estar = nivel_bem_estar.trim();
-        tendencias_humor = tendencias_humor.trim();
+    // Método auxiliar para verificar se tem pesquisa
+    public boolean hasPesquisa() {
+        return id_pesquisa > 0;
     }
 
-    @Override
-    public String toString() {
-        return "RelatorioRequestDto{" +
-                "id_funcionario=" + id_funcionario +
-                ", resumo_feedback='" + resumo_feedback + '\'' +
-                ", nivel_bem_estar='" + nivel_bem_estar + '\'' +
-                ", tendencias_humor='" + tendencias_humor + '\'' +
-                '}';
+    public void cleanData() {
+        if (this.resumo_feedback != null) {
+            this.resumo_feedback = this.resumo_feedback.trim();
+        }
+        if (this.nivel_bem_estar != null) {
+            this.nivel_bem_estar = this.nivel_bem_estar.trim();
+        }
+        if (this.tendencias_humor != null) {
+            this.tendencias_humor = this.tendencias_humor.trim();
+        }
     }
 }

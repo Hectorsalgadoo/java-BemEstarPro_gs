@@ -5,6 +5,7 @@ import br.com.fiap.dao.RelatorioDao;
 import br.com.fiap.dto.RelatorioRequestDto;
 import br.com.fiap.dto.RelatorioResponseDto;
 import br.com.fiap.models.Funcionario;
+import br.com.fiap.models.PesquisaRegimeTrabalho;
 import br.com.fiap.models.Relatorio;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -44,10 +45,27 @@ public class RelatorioService {
     }
 
     public Relatorio cadastrar(RelatorioRequestDto relatorioDto) throws SQLException {
-
         // validação do DTO
         relatorioDto.cleanData();
 
+        // Validações básicas
+        if (relatorioDto.getId_funcionario() <= 0) {
+            throw new IllegalArgumentException("ID do funcionário deve ser positivo");
+        }
+
+        if (relatorioDto.getResumo_feedback() == null || relatorioDto.getResumo_feedback().trim().isEmpty()) {
+            throw new IllegalArgumentException("Resumo do feedback é obrigatório");
+        }
+
+        if (relatorioDto.getNivel_bem_estar() == null || relatorioDto.getNivel_bem_estar().trim().isEmpty()) {
+            throw new IllegalArgumentException("Nível de bem-estar é obrigatório");
+        }
+
+        if (relatorioDto.getTendencias_humor() == null || relatorioDto.getTendencias_humor().trim().isEmpty()) {
+            throw new IllegalArgumentException("Tendências de humor são obrigatórias");
+        }
+
+        // Verifica se o funcionário existe
         Funcionario funcionario = funcionarioDao.buscarPorIdFuncionario(relatorioDto.getId_funcionario());
         if (funcionario == null) {
             throw new IllegalArgumentException(
@@ -55,8 +73,22 @@ public class RelatorioService {
             );
         }
 
+        // Valida se a pesquisa existe (se foi informada)
+        if (relatorioDto.hasPesquisa()) {
+            // Aqui você pode adicionar validação se a pesquisa existe
+            //PesquisaDao pesquisaDao = ...;
+            // PesquisaRegimeTrabalho pesquisa = pesquisaRegimeTrabalhoDao.buscarPorId(relatorioDto.getId_pesquisa());
+            //if (pesquisa == null) {
+            //     throw new IllegalArgumentException("Pesquisa com ID " + relatorioDto.getId_pesquisa() + " não encontrada");
+            // }
+        }
+
         Relatorio relatorio = new Relatorio();
         relatorio.setId_funcionario(relatorioDto.getId_funcionario());
+
+        // Seta id_pesquisa (pode ser 0)
+        relatorio.setId_pesquisa(relatorioDto.getId_pesquisa());
+
         relatorio.setFuncionario(funcionario);
         relatorio.setResumo_feedback(relatorioDto.getResumo_feedback());
         relatorio.setNivel_bem_estar(relatorioDto.getNivel_bem_estar());
@@ -75,13 +107,32 @@ public class RelatorioService {
             throw new IllegalArgumentException("ID do relatório deve ser positivo");
         }
 
+        // Verifica se o relatório existe
         Relatorio relatorioExistente = relatorioDao.buscarPorIdRelatorio(id);
         if (relatorioExistente == null) {
-            throw new IllegalArgumentException("Relatório com ID " + id + " não encontrado");
+            throw new NotFoundException("Relatório com ID " + id + " não encontrado");
         }
 
         relatorioDto.cleanData();
 
+        // Validações básicas
+        if (relatorioDto.getId_funcionario() <= 0) {
+            throw new IllegalArgumentException("ID do funcionário deve ser positivo");
+        }
+
+        if (relatorioDto.getResumo_feedback() == null || relatorioDto.getResumo_feedback().trim().isEmpty()) {
+            throw new IllegalArgumentException("Resumo do feedback é obrigatório");
+        }
+
+        if (relatorioDto.getNivel_bem_estar() == null || relatorioDto.getNivel_bem_estar().trim().isEmpty()) {
+            throw new IllegalArgumentException("Nível de bem-estar é obrigatório");
+        }
+
+        if (relatorioDto.getTendencias_humor() == null || relatorioDto.getTendencias_humor().trim().isEmpty()) {
+            throw new IllegalArgumentException("Tendências de humor são obrigatórias");
+        }
+
+        // Verifica se o funcionário existe
         Funcionario funcionario = funcionarioDao.buscarPorIdFuncionario(relatorioDto.getId_funcionario());
         if (funcionario == null) {
             throw new IllegalArgumentException(
@@ -89,9 +140,23 @@ public class RelatorioService {
             );
         }
 
+        // Valida se a pesquisa existe (se foi informada)
+        if (relatorioDto.hasPesquisa()) {
+            // Aqui você pode adicionar validação se a pesquisa existe
+            // PesquisaDao pesquisaDao = ...;
+            // PesquisaRegimeTrabalho pesquisa = pesquisaDao.buscarPorId(relatorioDto.getId_pesquisa());
+            // if (pesquisa == null) {
+            //     throw new IllegalArgumentException("Pesquisa com ID " + relatorioDto.getId_pesquisa() + " não encontrada");
+            // }
+        }
+
         Relatorio relatorio = new Relatorio();
         relatorio.setId_relatorio(id);
         relatorio.setId_funcionario(relatorioDto.getId_funcionario());
+
+        // Seta id_pesquisa (pode ser 0)
+        relatorio.setId_pesquisa(relatorioDto.getId_pesquisa());
+
         relatorio.setFuncionario(funcionario);
         relatorio.setResumo_feedback(relatorioDto.getResumo_feedback());
         relatorio.setNivel_bem_estar(relatorioDto.getNivel_bem_estar());
@@ -104,6 +169,8 @@ public class RelatorioService {
         if (id <= 0) {
             throw new IllegalArgumentException("ID do relatório deve ser positivo");
         }
+
+        // Verifica se o relatório existe antes de excluir
         buscarPorId(id);
         relatorioDao.excluirRelatorio(id);
     }

@@ -6,7 +6,7 @@ public class Relatorio {
     private Funcionario funcionario;
     private int id_funcionario;
     private PesquisaRegimeTrabalho pesquisaRegimeTrabalho;
-    private int id_pesquisa;
+    private int id_pesquisa; // Mantém como int
     private String resumo_feedback;
     private String nivel_bem_estar;
     private String tendencias_humor;
@@ -28,6 +28,9 @@ public class Relatorio {
 
     public void setFuncionario(Funcionario funcionario) {
         this.funcionario = funcionario;
+        if (funcionario != null) {
+            this.id_funcionario = funcionario.getId();
+        }
     }
 
     public int getId_funcionario() {
@@ -44,6 +47,9 @@ public class Relatorio {
 
     public void setPesquisaRegimeTrabalho(PesquisaRegimeTrabalho pesquisaRegimeTrabalho) {
         this.pesquisaRegimeTrabalho = pesquisaRegimeTrabalho;
+        if (pesquisaRegimeTrabalho != null) {
+            this.id_pesquisa = pesquisaRegimeTrabalho.getId_pesquisa();
+        }
     }
 
     public int getId_pesquisa() {
@@ -52,6 +58,11 @@ public class Relatorio {
 
     public void setId_pesquisa(int id_pesquisa) {
         this.id_pesquisa = id_pesquisa;
+    }
+
+    // Método auxiliar para verificar se tem pesquisa
+    public boolean hasPesquisa() {
+        return id_pesquisa > 0;
     }
 
     public String getResumo_feedback() {

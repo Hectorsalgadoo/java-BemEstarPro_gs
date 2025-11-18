@@ -1,6 +1,8 @@
 package br.com.fiap.dao;
 
 import br.com.fiap.models.Relatorio;
+import br.com.fiap.models.Funcionario;
+import br.com.fiap.models.PesquisaRegimeTrabalho;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -18,17 +20,24 @@ public class RelatorioDao {
     public Relatorio cadastrarRelatorio(Relatorio relatorio) {
         String sql = """
                 INSERT INTO RELATORIO 
-                (id_funcionario, resumo_feedback, nivel_bem_estar, tendencias_humor)
-                VALUES (?, ?, ?, ?)
+                (id_funcionario, id_pesquisa, resumo_feedback, nivel_bem_estar, tendencias_humor)
+                VALUES (?, ?, ?, ?, ?)
                 """;
 
         try (Connection conexao = dataSource.getConnection();
              PreparedStatement stmt = conexao.prepareStatement(sql, new String[]{"id_relatorio"})) {
 
             stmt.setInt(1, relatorio.getId_funcionario());
-            stmt.setString(2, relatorio.getResumo_feedback());
-            stmt.setString(3, relatorio.getNivel_bem_estar());
-            stmt.setString(4, relatorio.getTendencias_humor());
+
+            if (relatorio.hasPesquisa()) {
+                stmt.setInt(2, relatorio.getId_pesquisa());
+            } else {
+                stmt.setNull(2, Types.INTEGER);
+            }
+
+            stmt.setString(3, relatorio.getResumo_feedback());
+            stmt.setString(4, relatorio.getNivel_bem_estar());
+            stmt.setString(5, relatorio.getTendencias_humor());
 
             stmt.executeUpdate();
 
@@ -49,9 +58,13 @@ public class RelatorioDao {
     public List<Relatorio> listRelatorio() {
         List<Relatorio> relatorios = new ArrayList<>();
         String sql = """
-                SELECT id_relatorio, id_funcionario, resumo_feedback, 
-                       nivel_bem_estar, tendencias_humor
-                FROM RELATORIO
+                 SELECT r.id_relatorio, r.id_funcionario, r.id_pesquisa, 
+                        r.resumo_feedback, r.nivel_bem_estar, r.tendencias_humor,
+                        f.nome_funcionario,
+                        p.regime_trabalho, p.satisfacao, p.comentario
+                 FROM RELATORIO r
+                 JOIN FUNCIONARIO f ON r.id_funcionario = f.id_funcionario
+                 LEFT JOIN PESQUISA_REGIME_TRABALHO p ON r.id_pesquisa = p.id_pesquisa
                 """;
 
         try (Connection conexao = dataSource.getConnection();
@@ -71,10 +84,14 @@ public class RelatorioDao {
 
     public Relatorio buscarPorIdRelatorio(int id) {
         String sql = """
-                SELECT id_relatorio, id_funcionario, resumo_feedback, 
-                       nivel_bem_estar, tendencias_humor
-                FROM RELATORIO 
-                WHERE id_relatorio = ?
+                 SELECT r.id_relatorio, r.id_funcionario, r.id_pesquisa,
+                        r.resumo_feedback, r.nivel_bem_estar, r.tendencias_humor,
+                        f.nome_funcionario,
+                        p.regime_trabalho, p.satisfacao, p.comentario
+                 FROM RELATORIO r
+                 JOIN FUNCIONARIO f ON r.id_funcionario = f.id_funcionario
+                 LEFT JOIN PESQUISA_REGIME_TRABALHO p ON r.id_pesquisa = p.id_pesquisa
+                 WHERE r.id_relatorio = ?
                 """;
 
         try (Connection conexao = dataSource.getConnection();
@@ -103,6 +120,7 @@ public class RelatorioDao {
         String sql = """
                 UPDATE RELATORIO
                 SET id_funcionario = ?, 
+                    id_pesquisa = ?,
                     resumo_feedback = ?, 
                     nivel_bem_estar = ?, 
                     tendencias_humor = ?
@@ -113,10 +131,17 @@ public class RelatorioDao {
              PreparedStatement ps = conexao.prepareStatement(sql)) {
 
             ps.setInt(1, relatorio.getId_funcionario());
-            ps.setString(2, relatorio.getResumo_feedback());
-            ps.setString(3, relatorio.getNivel_bem_estar());
-            ps.setString(4, relatorio.getTendencias_humor());
-            ps.setInt(5, relatorio.getId_relatorio());
+
+            if (relatorio.hasPesquisa()) {
+                ps.setInt(2, relatorio.getId_pesquisa());
+            } else {
+                ps.setNull(2, Types.INTEGER);
+            }
+
+            ps.setString(3, relatorio.getResumo_feedback());
+            ps.setString(4, relatorio.getNivel_bem_estar());
+            ps.setString(5, relatorio.getTendencias_humor());
+            ps.setInt(6, relatorio.getId_relatorio());
 
             int rows = ps.executeUpdate();
 
@@ -164,6 +189,47 @@ public class RelatorioDao {
         r.setNivel_bem_estar(rs.getString("nivel_bem_estar"));
         r.setTendencias_humor(rs.getString("tendencias_humor"));
 
+        // Seta id_pesquisa (pode ser 0 se não houver pesquisa)
+        r.setId_pesquisa(rs.getInt("id_pesquisa"));
+
+        // Popular funcionário
+        Funcionario funcionario = new Funcionario();
+        funcionario.setId(rs.getInt("id_funcionario"));
+        funcionario.setNome(rs.getString("nome_funcionario"));
+        r.setFuncionario(funcionario);
+
+        // Popular pesquisa se existir
+        if (r.hasPesquisa() && rs.getObject("regime_trabalho") != null) {
+            PesquisaRegimeTrabalho pesquisa = new PesquisaRegimeTrabalho();
+            pesquisa.setId_pesquisa(r.getId_pesquisa());
+            pesquisa.setRegime_trabalho(rs.getString("regime_trabalho"));
+
+            // Popula satisfacao - verifica se não é null no ResultSet
+            if (rs.getObject("satisfacao") != null) {
+                pesquisa.setSatisfacao(rs.getInt("satisfacao"));
+            } else {
+                pesquisa.setSatisfacao(0); // ou algum valor default
+            }
+
+            // Popula comentario - verifica se não é null no ResultSet
+            if (rs.getObject("comentario") != null) {
+                pesquisa.setComentario(rs.getString("comentario"));
+            } else {
+                pesquisa.setComentario(null);
+            }
+
+            r.setPesquisaRegimeTrabalho(pesquisa);
+        }
+
         return r;
+    }
+
+    private boolean hasColumn(ResultSet rs, String columnName) {
+        try {
+            rs.findColumn(columnName);
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
     }
 }
