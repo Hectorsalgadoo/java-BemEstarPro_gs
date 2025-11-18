@@ -93,7 +93,7 @@ public class PesquisaRegimeTrabalhoDao {
 
 
         pesquisa.setId_pesquisa(rs.getInt("ID_PESQUISA"));
-
+        pesquisa.setRegime_trabalho(rs.getString("REGIME_TRABALHO"));
         pesquisa.setSatisfacao(rs.getInt("SATISFACAO"));
         pesquisa.setComentario(rs.getString("COMENTARIO"));
 
