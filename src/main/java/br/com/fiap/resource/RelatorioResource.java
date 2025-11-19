@@ -73,18 +73,17 @@ public class RelatorioResource {
 
             relatorioDto.cleanData();
 
-            Funcionario funcionario = funcionarioDao.buscarPorIdFuncionario(relatorioDto.getId_funcionario());
+            // Valida se a pesquisa existe e obtém o funcionário automaticamente
+            Funcionario funcionario = funcionarioDao.buscarFuncionarioPorPesquisa(relatorioDto.getId_pesquisa());
             if (funcionario == null) {
                 return Response.status(Response.Status.NOT_FOUND)
-                        .entity("Funcionário com ID " + relatorioDto.getId_funcionario() + " não encontrado")
+                        .entity("Pesquisa com ID " + relatorioDto.getId_pesquisa() + " não encontrada ou sem funcionário vinculado")
                         .build();
             }
 
-            if (relatorioDto.hasPesquisa()) {
-            }
-
             Relatorio relatorio = new Relatorio();
-            relatorio.setId_funcionario(relatorioDto.getId_funcionario());
+
+            relatorio.setId_funcionario(funcionario.getId());
 
             relatorio.setId_pesquisa(relatorioDto.getId_pesquisa());
 

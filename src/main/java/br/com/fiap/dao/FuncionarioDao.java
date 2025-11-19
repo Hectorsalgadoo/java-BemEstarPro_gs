@@ -160,6 +160,37 @@ public class FuncionarioDao {
         return funcionario;
     }
 
+    public Funcionario buscarFuncionarioPorPesquisa(int id_pesquisa) {
+        String sql = """
+                 SELECT f.id_funcionario, f.nome_funcionario, f.cpf_funcionario, f.cargo_funcionario
+                 FROM FUNCIONARIO f
+                 JOIN PESQUISA_REGIME_TRABALHO p ON f.id_funcionario = p.id_funcionario
+                 WHERE p.id_pesquisa = ?
+                 """;
+
+        try (Connection conexao = dataSource.getConnection();
+             PreparedStatement ps = conexao.prepareStatement(sql)) {
+
+            ps.setInt(1, id_pesquisa);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Funcionario funcionario = new Funcionario();
+                    funcionario.setId(rs.getInt("id_funcionario"));
+                    funcionario.setNome(rs.getString("nome_funcionario"));
+                    funcionario.setCpf(String.valueOf(rs.getLong("cpf_funcionario")));
+                    funcionario.setCargo(rs.getString("cargo_funcionario"));
+                    return funcionario;
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar funcionário por pesquisa: " + e.getMessage(), e);
+        }
+
+        return null;
+    }
+
     /**
      * Atualiza um funcionario existente
      */

@@ -6,11 +6,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class RelatorioRequestDto {
 
-    @JsonProperty("id_funcionario")
-    private int id_funcionario;
-
     @JsonProperty("id_pesquisa")
-    private int id_pesquisa;
+    private int id_pesquisa; // Agora obrigatório
 
     @JsonProperty("resumo_feedback")
     private String resumo_feedback;
@@ -21,14 +18,7 @@ public class RelatorioRequestDto {
     @JsonProperty("tendencias_humor")
     private String tendencias_humor;
 
-    public int getId_funcionario() {
-        return id_funcionario;
-    }
-
-    public void setId_funcionario(int id_funcionario) {
-        this.id_funcionario = id_funcionario;
-    }
-
+    // Getters e Setters
     public int getId_pesquisa() {
         return id_pesquisa;
     }

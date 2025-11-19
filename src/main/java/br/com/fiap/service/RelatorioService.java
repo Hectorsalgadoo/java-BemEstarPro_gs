@@ -47,8 +47,8 @@ public class RelatorioService {
     public Relatorio cadastrar(RelatorioRequestDto relatorioDto) throws SQLException {
         relatorioDto.cleanData();
 
-        if (relatorioDto.getId_funcionario() <= 0) {
-            throw new IllegalArgumentException("ID do funcionário deve ser positivo");
+        if (relatorioDto.getId_pesquisa() <= 0) {
+            throw new IllegalArgumentException("ID da pesquisa deve ser positivo");
         }
 
         if (relatorioDto.getResumo_feedback() == null || relatorioDto.getResumo_feedback().trim().isEmpty()) {
@@ -63,17 +63,16 @@ public class RelatorioService {
             throw new IllegalArgumentException("Tendências de humor são obrigatórias");
         }
 
-        Funcionario funcionario = funcionarioDao.buscarPorIdFuncionario(relatorioDto.getId_funcionario());
+        Funcionario funcionario = funcionarioDao.buscarFuncionarioPorPesquisa(relatorioDto.getId_pesquisa());
         if (funcionario == null) {
             throw new IllegalArgumentException(
-                    "Funcionário com ID " + relatorioDto.getId_funcionario() + " não encontrado"
+                    "Pesquisa com ID " + relatorioDto.getId_pesquisa() + " não encontrada ou sem funcionário vinculado"
             );
-        }
-        if (relatorioDto.hasPesquisa()) {
         }
 
         Relatorio relatorio = new Relatorio();
-        relatorio.setId_funcionario(relatorioDto.getId_funcionario());
+
+        relatorio.setId_funcionario(funcionario.getId());
 
         relatorio.setId_pesquisa(relatorioDto.getId_pesquisa());
 
@@ -95,6 +94,7 @@ public class RelatorioService {
             throw new IllegalArgumentException("ID do relatório deve ser positivo");
         }
 
+        // Verifica se o relatório existe
         Relatorio relatorioExistente = relatorioDao.buscarPorIdRelatorio(id);
         if (relatorioExistente == null) {
             throw new NotFoundException("Relatório com ID " + id + " não encontrado");
@@ -102,8 +102,9 @@ public class RelatorioService {
 
         relatorioDto.cleanData();
 
-        if (relatorioDto.getId_funcionario() <= 0) {
-            throw new IllegalArgumentException("ID do funcionário deve ser positivo");
+        // Validações básicas
+        if (relatorioDto.getId_pesquisa() <= 0) {
+            throw new IllegalArgumentException("ID da pesquisa deve ser positivo");
         }
 
         if (relatorioDto.getResumo_feedback() == null || relatorioDto.getResumo_feedback().trim().isEmpty()) {
@@ -118,19 +119,21 @@ public class RelatorioService {
             throw new IllegalArgumentException("Tendências de humor são obrigatórias");
         }
 
-        Funcionario funcionario = funcionarioDao.buscarPorIdFuncionario(relatorioDto.getId_funcionario());
+        // Busca a pesquisa para obter o funcionário automaticamente
+        Funcionario funcionario = funcionarioDao.buscarFuncionarioPorPesquisa(relatorioDto.getId_pesquisa());
         if (funcionario == null) {
             throw new IllegalArgumentException(
-                    "Funcionário com ID " + relatorioDto.getId_funcionario() + " não encontrado"
+                    "Pesquisa com ID " + relatorioDto.getId_pesquisa() + " não encontrada ou sem funcionário vinculado"
             );
-        }
-        if (relatorioDto.hasPesquisa()) {
         }
 
         Relatorio relatorio = new Relatorio();
         relatorio.setId_relatorio(id);
-        relatorio.setId_funcionario(relatorioDto.getId_funcionario());
 
+        // Seta o id_funcionario automaticamente da pesquisa
+        relatorio.setId_funcionario(funcionario.getId());
+
+        // Seta id_pesquisa
         relatorio.setId_pesquisa(relatorioDto.getId_pesquisa());
 
         relatorio.setFuncionario(funcionario);
