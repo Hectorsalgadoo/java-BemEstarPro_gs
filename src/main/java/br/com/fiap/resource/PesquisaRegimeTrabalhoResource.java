@@ -72,8 +72,6 @@ public class PesquisaRegimeTrabalhoResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response cadastrar(PesquisaRegimeTrabalhoRequestDto pesquisadto, @Context UriInfo uriInfo) {
         try {
-            //consultaDto.validateForCreate();
-
             PesquisaRegimeTrabalho pesquisaRegimeTrabalhocadastrar = pesquisaRegimeTrabalhoService.cadastrar(pesquisadto);
 
             UriBuilder builder = uriInfo.getAbsolutePathBuilder();

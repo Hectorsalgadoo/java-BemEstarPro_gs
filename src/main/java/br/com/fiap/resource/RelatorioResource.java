@@ -73,7 +73,6 @@ public class RelatorioResource {
 
             relatorioDto.cleanData();
 
-            // Valida se o funcionário existe
             Funcionario funcionario = funcionarioDao.buscarPorIdFuncionario(relatorioDto.getId_funcionario());
             if (funcionario == null) {
                 return Response.status(Response.Status.NOT_FOUND)
@@ -81,22 +80,12 @@ public class RelatorioResource {
                         .build();
             }
 
-            // Valida se a pesquisa existe (se foi informada)
             if (relatorioDto.hasPesquisa()) {
-                // Aqui você pode adicionar validação se a pesquisa existe
-                // PesquisaDao pesquisaDao = ...;
-                // PesquisaRegimeTrabalho pesquisa = pesquisaDao.buscarPorId(relatorioDto.getId_pesquisa());
-                // if (pesquisa == null) {
-                //     return Response.status(Response.Status.NOT_FOUND)
-                //             .entity("Pesquisa com ID " + relatorioDto.getId_pesquisa() + " não encontrada")
-                //             .build();
-                // }
             }
 
             Relatorio relatorio = new Relatorio();
             relatorio.setId_funcionario(relatorioDto.getId_funcionario());
 
-            // Seta id_pesquisa (pode ser 0)
             relatorio.setId_pesquisa(relatorioDto.getId_pesquisa());
 
             relatorio.setResumo_feedback(relatorioDto.getResumo_feedback());

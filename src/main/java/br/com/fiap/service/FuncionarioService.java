@@ -94,7 +94,6 @@ public class FuncionarioService {
             throw new IllegalArgumentException("Dados do funcionario não podem ser nulos");
         }
 
-        // Debug: verifique o que está chegando
         System.out.println("=== DTO RECEBIDO NO SERVICE ===");
         System.out.println("Nome: " + funcionarioDto.getNome());
         System.out.println("CPF: " + funcionarioDto.getCpf());

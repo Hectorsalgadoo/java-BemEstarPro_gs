@@ -188,30 +188,23 @@ public class RelatorioDao {
         r.setResumo_feedback(rs.getString("resumo_feedback"));
         r.setNivel_bem_estar(rs.getString("nivel_bem_estar"));
         r.setTendencias_humor(rs.getString("tendencias_humor"));
-
-        // Seta id_pesquisa (pode ser 0 se não houver pesquisa)
         r.setId_pesquisa(rs.getInt("id_pesquisa"));
-
-        // Popular funcionário
         Funcionario funcionario = new Funcionario();
         funcionario.setId(rs.getInt("id_funcionario"));
         funcionario.setNome(rs.getString("nome_funcionario"));
         r.setFuncionario(funcionario);
 
-        // Popular pesquisa se existir
         if (r.hasPesquisa() && rs.getObject("regime_trabalho") != null) {
             PesquisaRegimeTrabalho pesquisa = new PesquisaRegimeTrabalho();
             pesquisa.setId_pesquisa(r.getId_pesquisa());
             pesquisa.setRegime_trabalho(rs.getString("regime_trabalho"));
 
-            // Popula satisfacao - verifica se não é null no ResultSet
             if (rs.getObject("satisfacao") != null) {
                 pesquisa.setSatisfacao(rs.getInt("satisfacao"));
             } else {
-                pesquisa.setSatisfacao(0); // ou algum valor default
+                pesquisa.setSatisfacao(0);
             }
 
-            // Popula comentario - verifica se não é null no ResultSet
             if (rs.getObject("comentario") != null) {
                 pesquisa.setComentario(rs.getString("comentario"));
             } else {

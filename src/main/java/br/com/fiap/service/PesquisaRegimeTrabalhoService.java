@@ -53,9 +53,6 @@ public class PesquisaRegimeTrabalhoService {
      * Cadastra nova consulta online - VERSÃO CORRIGIDA
      */
     public PesquisaRegimeTrabalho cadastrar(PesquisaRegimeTrabalhoRequestDto pesquisaDto) throws SQLException {
-        //validarDadosConsulta(consultaDto);
-
-
         PesquisaRegimeTrabalho pesquisa = new PesquisaRegimeTrabalho();
         pesquisa.setSatisfacao(pesquisaDto.getSatisfacao());
         pesquisa.setRegime_trabalho(pesquisaDto.getRegime_trabalho());
@@ -69,7 +66,6 @@ public class PesquisaRegimeTrabalhoService {
         if (funcionario == null) {
             throw new IllegalArgumentException("Funcionario com ID " + pesquisaDto.getIdfuncionario() + " não encontrado");
         }
-//        pesquisa.setIdfuncionario(pesquisa.getIdfuncionario());
         pesquisa.setIdfuncionario(pesquisaDto.getIdfuncionario());
 
         pesquisa.setFuncionario(funcionario);
@@ -91,8 +87,6 @@ public class PesquisaRegimeTrabalhoService {
         if (id <= 0) {
             throw new IllegalArgumentException("ID da pesquisa deve ser positivo para atualização");
         }
-        //validarDadosConsulta(consultaDto);
-
 
         buscarPorId(id);
 

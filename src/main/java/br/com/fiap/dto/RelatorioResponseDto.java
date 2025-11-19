@@ -10,9 +10,6 @@ public class RelatorioResponseDto {
     @JsonProperty("id_relatorio")
     private int id_relatorio;
 
-    @JsonProperty("id_funcionario")
-    private int id_funcionario;
-
     @JsonProperty("nome_funcionario")
     private String nomeFuncionario;
 
@@ -40,12 +37,11 @@ public class RelatorioResponseDto {
     public RelatorioResponseDto() {
     }
 
-    public RelatorioResponseDto(int id_relatorio, int id_funcionario, String nomeFuncionario,
+    public RelatorioResponseDto(int id_relatorio, String nomeFuncionario,
                                 Integer id_pesquisa, String regimeTrabalho, Integer satisfacao,
                                 String comentarioPesquisa, String resumo_feedback,
                                 String nivel_bem_estar, String tendencias_humor) {
         this.id_relatorio = id_relatorio;
-        this.id_funcionario = id_funcionario;
         this.nomeFuncionario = nomeFuncionario;
         this.id_pesquisa = id_pesquisa;
         this.regimeTrabalho = regimeTrabalho;
@@ -58,12 +54,8 @@ public class RelatorioResponseDto {
 
     public RelatorioResponseDto(Relatorio relatorio) {
         this.id_relatorio = relatorio.getId_relatorio();
-        this.id_funcionario = relatorio.getId_funcionario();
-
-        // Converte 0 para null no JSON
         this.id_pesquisa = relatorio.hasPesquisa() ? relatorio.getId_pesquisa() : null;
 
-        // Obtém os dados da pesquisa, se existir
         this.regimeTrabalho = extractRegimeTrabalho(relatorio);
         this.satisfacao = extractSatisfacao(relatorio);
         this.comentarioPesquisa = extractComentario(relatorio);
@@ -122,21 +114,12 @@ public class RelatorioResponseDto {
         return null;
     }
 
-    // Getters e Setters para todos os campos...
     public int getId_relatorio() {
         return id_relatorio;
     }
 
     public void setId_relatorio(int id_relatorio) {
         this.id_relatorio = id_relatorio;
-    }
-
-    public int getId_funcionario() {
-        return id_funcionario;
-    }
-
-    public void setId_funcionario(int id_funcionario) {
-        this.id_funcionario = id_funcionario;
     }
 
     public String getNomeFuncionario() {
@@ -207,7 +190,6 @@ public class RelatorioResponseDto {
     public String toString() {
         return "RelatorioResponseDto{" +
                 "id_relatorio=" + id_relatorio +
-                ", id_funcionario=" + id_funcionario +
                 ", nomeFuncionario='" + nomeFuncionario + '\'' +
                 ", id_pesquisa=" + id_pesquisa +
                 ", regimeTrabalho='" + regimeTrabalho + '\'' +

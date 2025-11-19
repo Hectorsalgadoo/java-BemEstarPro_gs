@@ -10,7 +10,7 @@ public class RelatorioRequestDto {
     private int id_funcionario;
 
     @JsonProperty("id_pesquisa")
-    private int id_pesquisa; // int (0 significa sem pesquisa)
+    private int id_pesquisa;
 
     @JsonProperty("resumo_feedback")
     private String resumo_feedback;
@@ -21,7 +21,6 @@ public class RelatorioRequestDto {
     @JsonProperty("tendencias_humor")
     private String tendencias_humor;
 
-    // Getters e Setters
     public int getId_funcionario() {
         return id_funcionario;
     }
@@ -62,7 +61,6 @@ public class RelatorioRequestDto {
         this.tendencias_humor = tendencias_humor;
     }
 
-    // Método auxiliar para verificar se tem pesquisa
     public boolean hasPesquisa() {
         return id_pesquisa > 0;
     }

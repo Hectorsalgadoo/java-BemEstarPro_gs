@@ -60,7 +60,6 @@ public class Relatorio {
         this.id_pesquisa = id_pesquisa;
     }
 
-    // Método auxiliar para verificar se tem pesquisa
     public boolean hasPesquisa() {
         return id_pesquisa > 0;
     }

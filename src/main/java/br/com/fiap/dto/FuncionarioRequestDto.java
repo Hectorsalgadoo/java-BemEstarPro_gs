@@ -16,11 +16,9 @@ public class FuncionarioRequestDto {
     @JsonProperty("cargo_funcionario")
     private String cargo;
 
-    // Construtor vazio
     public FuncionarioRequestDto() {
     }
 
-    // Construtor com parâmetros (incluindo ID)
     public FuncionarioRequestDto(Integer id, String nome, String cpf, String cargo) {
         this.id = id;
         this.nome = nome;
@@ -28,14 +26,12 @@ public class FuncionarioRequestDto {
         this.cargo = cargo;
     }
 
-    // Construtor sem ID (para cadastro)
     public FuncionarioRequestDto(String nome, String cpf, String cargo) {
         this.nome = nome;
         this.cpf = cpf;
         this.cargo = cargo;
     }
 
-    // Getters e Setters
     public Integer getId() {
         return id;
     }

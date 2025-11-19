@@ -20,11 +20,9 @@ public class FuncionarioResponseDto {
     @JsonProperty("cargo_funcionario")
     private String cargo_funcionario;
 
-    // Construtor vazio
     public FuncionarioResponseDto() {
     }
 
-    // Construtor com parâmetros
     public FuncionarioResponseDto(Integer id_funcionario, String nome_funcionario, String cpf_funcionario, String cargo_funcionario) {
         this.id_funcionario = id_funcionario;
         this.nome_funcionario = nome_funcionario;
