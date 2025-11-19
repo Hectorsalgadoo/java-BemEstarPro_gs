@@ -1,11 +1,7 @@
 package br.com.fiap.resource;
 
-import br.com.fiap.dao.FuncionarioDao;
-import br.com.fiap.dao.RelatorioDao;
 import br.com.fiap.dto.RelatorioRequestDto;
 import br.com.fiap.dto.RelatorioResponseDto;
-import br.com.fiap.models.Funcionario;
-import br.com.fiap.models.Relatorio;
 import br.com.fiap.service.RelatorioService;
 
 import jakarta.inject.Inject;
@@ -19,13 +15,7 @@ import java.util.List;
 public class RelatorioResource {
 
     @Inject
-    FuncionarioDao funcionarioDao;
-
-    @Inject
     RelatorioService relatorioService;
-
-    @Inject
-    RelatorioDao relatorioDao;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -48,9 +38,13 @@ public class RelatorioResource {
         try {
             RelatorioResponseDto relatorio = relatorioService.buscarPorId(id);
             return Response.ok(relatorio).build();
-        } catch (NotFoundException e) {
+        } catch (jakarta.ws.rs.NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Relatório não encontrado com ID: " + id)
+                    .entity(e.getMessage())
+                    .build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
                     .build();
         } catch (Exception e) {
             System.err.println("Erro ao buscar relatório ID " + id + ": " + e.getMessage());
@@ -71,46 +65,26 @@ public class RelatorioResource {
                         .build();
             }
 
-            relatorioDto.cleanData();
 
-            // Valida se a pesquisa existe e obtém o funcionário automaticamente
-            Funcionario funcionario = funcionarioDao.buscarFuncionarioPorPesquisa(relatorioDto.getId_pesquisa());
-            if (funcionario == null) {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("Pesquisa com ID " + relatorioDto.getId_pesquisa() + " não encontrada ou sem funcionário vinculado")
-                        .build();
-            }
-
-            Relatorio relatorio = new Relatorio();
-
-            relatorio.setId_funcionario(funcionario.getId());
-
-            relatorio.setId_pesquisa(relatorioDto.getId_pesquisa());
-
-            relatorio.setResumo_feedback(relatorioDto.getResumo_feedback());
-            relatorio.setNivel_bem_estar(relatorioDto.getNivel_bem_estar());
-            relatorio.setTendencias_humor(relatorioDto.getTendencias_humor());
-            relatorio.setFuncionario(funcionario);
-
-            Relatorio relatorioCadastrado = relatorioDao.cadastrarRelatorio(relatorio);
+            RelatorioResponseDto relatorioCadastrado = relatorioService.cadastrar(relatorioDto);
 
             URI location = uriInfo.getAbsolutePathBuilder()
                     .path(Integer.toString(relatorioCadastrado.getId_relatorio()))
                     .build();
 
             return Response.created(location)
-                    .entity(RelatorioResponseDto.convertToDto(relatorioCadastrado))
+                    .entity(relatorioCadastrado)
                     .build();
 
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Dados inválidos: " + e.getMessage())
+                    .entity(e.getMessage())
                     .build();
-
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             System.err.println("Erro ao cadastrar relatório: " + e.getMessage());
+            e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Erro interno ao cadastrar relatório")
+                    .entity("Erro interno ao cadastrar relatório: " + e.getMessage())
                     .build();
         }
     }
@@ -125,20 +99,18 @@ public class RelatorioResource {
             RelatorioResponseDto atualizado = relatorioService.buscarPorId(id);
             return Response.ok(atualizado).build();
 
-        } catch (NotFoundException e) {
+        } catch (jakarta.ws.rs.NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Relatório não encontrado com ID: " + id)
+                    .entity(e.getMessage())
                     .build();
-
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Dados inválidos: " + e.getMessage())
+                    .entity(e.getMessage())
                     .build();
-
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Erro interno ao atualizar relatório")
+                    .entity("Erro interno ao atualizar relatório: " + e.getMessage())
                     .build();
         }
     }
@@ -149,18 +121,18 @@ public class RelatorioResource {
         try {
             relatorioService.excluir(id);
             return Response.noContent().build();
-        } catch (NotFoundException e) {
+        } catch (jakarta.ws.rs.NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Relatório não encontrado com ID: " + id)
+                    .entity(e.getMessage())
                     .build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("ID inválido: " + e.getMessage())
+                    .entity(e.getMessage())
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Erro interno ao excluir relatório")
+                    .entity("Erro interno ao excluir relatório: " + e.getMessage())
                     .build();
         }
     }
