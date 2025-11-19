@@ -6,6 +6,7 @@ public class Atividade {
     private String descricao_atividade;
     private String tipo_atividade;
     private String frequencia_recomendada;
+    private Integer id_relatorio;
 
     public Atividade() {
     }
@@ -16,6 +17,16 @@ public class Atividade {
         this.descricao_atividade = descricao_atividade;
         this.tipo_atividade = tipo_atividade;
         this.frequencia_recomendada = frequencia_recomendada;
+    }
+
+    public Atividade(int id_atividade, String descricao_atividade,
+                     String tipo_atividade, String frequencia_recomendada,
+                     Integer id_relatorio) {
+        this.id_atividade = id_atividade;
+        this.descricao_atividade = descricao_atividade;
+        this.tipo_atividade = tipo_atividade;
+        this.frequencia_recomendada = frequencia_recomendada;
+        this.id_relatorio = id_relatorio;
     }
 
     public int getId_atividade() {
@@ -50,6 +61,14 @@ public class Atividade {
         this.frequencia_recomendada = frequencia_recomendada;
     }
 
+    public Integer getId_relatorio() {
+        return id_relatorio;
+    }
+
+    public void setId_relatorio(Integer id_relatorio) {
+        this.id_relatorio = id_relatorio;
+    }
+
     @Override
     public String toString() {
         return "Atividade{" +
@@ -57,6 +76,7 @@ public class Atividade {
                 ", descricao_atividade='" + descricao_atividade + '\'' +
                 ", tipo_atividade='" + tipo_atividade + '\'' +
                 ", frequencia_recomendada='" + frequencia_recomendada + '\'' +
+                ", id_relatorio=" + id_relatorio +
                 '}';
     }
 }

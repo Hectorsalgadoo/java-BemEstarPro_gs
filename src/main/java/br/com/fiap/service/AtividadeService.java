@@ -21,26 +21,17 @@ public class AtividadeService {
         atividade.setDescricao_atividade(dto.getDescricao_atividade());
         atividade.setTipo_atividade(dto.getTipo_atividade());
         atividade.setFrequencia_recomendada(dto.getFrequencia_recomendada());
+        atividade.setId_relatorio(dto.getId_relatorio());
 
         atividadeDao.inserir(atividade);
 
-        return new AtividadeResponseDto(
-                atividade.getId_atividade(),
-                atividade.getDescricao_atividade(),
-                atividade.getTipo_atividade(),
-                atividade.getFrequencia_recomendada()
-        );
+        return convertToDto(atividade);
     }
 
     public List<AtividadeResponseDto> listar() {
         return atividadeDao.listarTodos()
                 .stream()
-                .map(a -> new AtividadeResponseDto(
-                        a.getId_atividade(),
-                        a.getDescricao_atividade(),
-                        a.getTipo_atividade(),
-                        a.getFrequencia_recomendada()
-                ))
+                .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
@@ -51,14 +42,10 @@ public class AtividadeService {
             throw new RuntimeException("Atividade não encontrada");
         }
 
-        return new AtividadeResponseDto(
-                atividade.getId_atividade(),
-                atividade.getDescricao_atividade(),
-                atividade.getTipo_atividade(),
-                atividade.getFrequencia_recomendada()
-        );
-
+        return convertToDto(atividade);
     }
+
+    // MÉTODO REMOVIDO: buscarPorRelatorio
 
     public AtividadeResponseDto atualizar(Integer id, AtividadeRequestDto dto) {
         Atividade atividade = atividadeDao.buscarPorId(id);
@@ -73,21 +60,25 @@ public class AtividadeService {
 
         atividadeDao.atualizar(atividade);
 
-        return new AtividadeResponseDto(
-                atividade.getId_atividade(),
-                atividade.getDescricao_atividade(),
-                atividade.getTipo_atividade(),
-                atividade.getFrequencia_recomendada()
-        );
-
+        return convertToDto(atividade);
     }
 
     public boolean deletar(Integer id) {
         try {
-            atividadeDao.deletar(id);
+            return atividadeDao.deletar(id);
         } catch (Exception e) {
             throw new RuntimeException("Erro ao deletar atividade: " + e.getMessage(), e);
         }
-        return false;
+    }
+
+    // Método para converter Atividade para AtividadeResponseDto
+    private AtividadeResponseDto convertToDto(Atividade atividade) {
+        return new AtividadeResponseDto(
+                atividade.getId_atividade(),
+                atividade.getDescricao_atividade(),
+                atividade.getTipo_atividade(),
+                atividade.getFrequencia_recomendada(),
+                atividade.getId_relatorio() // Pode ser null
+        );
     }
 }

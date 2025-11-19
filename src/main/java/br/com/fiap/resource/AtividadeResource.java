@@ -30,6 +30,8 @@ public class AtividadeResource {
         }
     }
 
+    // MÉTODO REMOVIDO: buscarPorRelatorio
+
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)

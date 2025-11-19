@@ -15,12 +15,11 @@ public class AtividadeDao {
     @Inject
     DataSource dataSource;
 
-
     public Atividade inserir(Atividade atividade) {
         String sql = """
-                INSERT INTO ATIVIDADE (descricao_atividade, tipo_atividade, frequencia_recomendada)
-                VALUES (?, ?, ?)
-                """;
+            INSERT INTO ATIVIDADE (descricao_atividade, tipo_atividade, frequencia_recomendada, id_relatorio)
+            VALUES (?, ?, ?, ?)
+            """;
 
         try (Connection conexao = dataSource.getConnection();
              PreparedStatement stmt = conexao.prepareStatement(sql, new String[]{"id_atividade"})) {
@@ -28,6 +27,11 @@ public class AtividadeDao {
             stmt.setString(1, atividade.getDescricao_atividade());
             stmt.setString(2, atividade.getTipo_atividade());
             stmt.setString(3, atividade.getFrequencia_recomendada());
+            if (atividade.getId_relatorio() != null) {
+                stmt.setInt(4, atividade.getId_relatorio());
+            } else {
+                stmt.setNull(4, Types.INTEGER);
+            }
 
             stmt.executeUpdate();
 
@@ -86,12 +90,27 @@ public class AtividadeDao {
         return null;
     }
 
+    private Atividade atividadeFromResultSet(ResultSet rs) throws SQLException {
+        Atividade atividade = new Atividade();
+
+        atividade.setId_atividade(rs.getInt("id_atividade"));
+        atividade.setDescricao_atividade(rs.getString("descricao_atividade"));
+        atividade.setTipo_atividade(rs.getString("tipo_atividade"));
+        atividade.setFrequencia_recomendada(rs.getString("frequencia_recomendada"));
+
+        if (rs.getObject("id_relatorio") != null) {
+            atividade.setId_relatorio(rs.getInt("id_relatorio"));
+        }
+
+        return atividade;
+    }
+
     public void atualizar(Atividade atividade) {
         String sql = """
-                UPDATE ATIVIDADE
-                SET descricao_atividade = ?, tipo_atividade = ?, frequencia_recomendada = ?
-                WHERE id_atividade = ?
-                """;
+            UPDATE ATIVIDADE
+            SET descricao_atividade = ?, tipo_atividade = ?, frequencia_recomendada = ?, id_relatorio = ?
+            WHERE id_atividade = ?
+            """;
 
         try (Connection conexao = dataSource.getConnection();
              PreparedStatement stmt = conexao.prepareStatement(sql)) {
@@ -99,7 +118,15 @@ public class AtividadeDao {
             stmt.setString(1, atividade.getDescricao_atividade());
             stmt.setString(2, atividade.getTipo_atividade());
             stmt.setString(3, atividade.getFrequencia_recomendada());
-            stmt.setInt(4, atividade.getId_atividade());
+
+            // id_relatorio pode ser null
+            if (atividade.getId_relatorio() != null) {
+                stmt.setInt(4, atividade.getId_relatorio());
+            } else {
+                stmt.setNull(4, Types.INTEGER);
+            }
+
+            stmt.setInt(5, atividade.getId_atividade());
 
             int rows = stmt.executeUpdate();
 
@@ -136,15 +163,6 @@ public class AtividadeDao {
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao excluir atividade: " + e.getMessage(), e);
         }
-        return false;
-    }
-
-    private Atividade atividadeFromResultSet(ResultSet rs) throws SQLException {
-        return new Atividade(
-                rs.getInt("id_atividade"),
-                rs.getString("descricao_atividade"),
-                rs.getString("tipo_atividade"),
-                rs.getString("frequencia_recomendada")
-        );
+        return true;
     }
 }

@@ -13,20 +13,34 @@ public class AtividadeRequestDto {
     @NotBlank(message = "A frequência recomendada é obrigatória.")
     private String frequencia_recomendada;
 
+    // APENAS id_relatorio
+    private Integer id_relatorio;
+
     public AtividadeRequestDto() {}
 
-    public AtividadeRequestDto(String descricao_atividade, String tipo_atividade, String frequencia_recomendada) {
+    public AtividadeRequestDto(String descricao_atividade, String tipo_atividade,
+                               String frequencia_recomendada, Integer id_relatorio) {
         this.descricao_atividade = descricao_atividade;
         this.tipo_atividade = tipo_atividade;
         this.frequencia_recomendada = frequencia_recomendada;
+        this.id_relatorio = id_relatorio;
     }
 
+    // Getters e Setters
     public String getDescricao_atividade() {
         return descricao_atividade;
     }
 
     public void setDescricao_atividade(String descricao_atividade) {
         this.descricao_atividade = descricao_atividade;
+    }
+
+    public String getTipo_atividade() {
+        return tipo_atividade;
+    }
+
+    public void setTipo_atividade(String tipo_atividade) {
+        this.tipo_atividade = tipo_atividade;
     }
 
     public String getFrequencia_recomendada() {
@@ -37,11 +51,11 @@ public class AtividadeRequestDto {
         this.frequencia_recomendada = frequencia_recomendada;
     }
 
-    public String getTipo_atividade() {
-        return tipo_atividade;
+    public Integer getId_relatorio() {
+        return id_relatorio;
     }
 
-    public void setTipo_atividade(String tipo_atividade) {
-        this.tipo_atividade = tipo_atividade;
+    public void setId_relatorio(Integer id_relatorio) {
+        this.id_relatorio = id_relatorio;
     }
 }
