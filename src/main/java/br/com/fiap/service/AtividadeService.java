@@ -45,8 +45,6 @@ public class AtividadeService {
         return convertToDto(atividade);
     }
 
-    // MÉTODO REMOVIDO: buscarPorRelatorio
-
     public AtividadeResponseDto atualizar(Integer id, AtividadeRequestDto dto) {
         Atividade atividade = atividadeDao.buscarPorId(id);
 
@@ -57,10 +55,13 @@ public class AtividadeService {
         atividade.setDescricao_atividade(dto.getDescricao_atividade());
         atividade.setTipo_atividade(dto.getTipo_atividade());
         atividade.setFrequencia_recomendada(dto.getFrequencia_recomendada());
+        atividade.setId_relatorio(dto.getId_relatorio());
 
         atividadeDao.atualizar(atividade);
 
-        return convertToDto(atividade);
+        // Busca a atividade atualizada para pegar o nome do funcionário
+        Atividade atividadeAtualizada = atividadeDao.buscarPorId(id);
+        return convertToDto(atividadeAtualizada);
     }
 
     public boolean deletar(Integer id) {
@@ -71,14 +72,14 @@ public class AtividadeService {
         }
     }
 
-    // Método para converter Atividade para AtividadeResponseDto
     private AtividadeResponseDto convertToDto(Atividade atividade) {
         return new AtividadeResponseDto(
                 atividade.getId_atividade(),
                 atividade.getDescricao_atividade(),
                 atividade.getTipo_atividade(),
                 atividade.getFrequencia_recomendada(),
-                atividade.getId_relatorio() // Pode ser null
+                atividade.getId_relatorio(),
+                atividade.getNome_funcionario() // Agora vem automaticamente do JOIN
         );
     }
 }

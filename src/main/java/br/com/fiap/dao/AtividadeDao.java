@@ -52,7 +52,13 @@ public class AtividadeDao {
 
     public List<Atividade> listarTodos() {
         List<Atividade> atividades = new ArrayList<>();
-        String sql = "SELECT * FROM ATIVIDADE ORDER BY id_atividade";
+        String sql = """
+            SELECT a.*, f.nome_funcionario 
+            FROM ATIVIDADE a 
+            LEFT JOIN RELATORIO r ON a.id_relatorio = r.id_relatorio 
+            LEFT JOIN FUNCIONARIO f ON r.id_funcionario = f.id_funcionario 
+            ORDER BY a.id_atividade
+            """;
 
         try (Connection conexao = dataSource.getConnection();
              PreparedStatement ps = conexao.prepareStatement(sql);
@@ -70,7 +76,13 @@ public class AtividadeDao {
     }
 
     public Atividade buscarPorId(Integer id) {
-        String sql = "SELECT * FROM ATIVIDADE WHERE id_atividade = ?";
+        String sql = """
+            SELECT a.*, f.nome_funcionario 
+            FROM ATIVIDADE a 
+            LEFT JOIN RELATORIO r ON a.id_relatorio = r.id_relatorio 
+            LEFT JOIN FUNCIONARIO f ON r.id_funcionario = f.id_funcionario 
+            WHERE a.id_atividade = ?
+            """;
 
         try (Connection conexao = dataSource.getConnection();
              PreparedStatement stmt = conexao.prepareStatement(sql)) {
@@ -101,6 +113,9 @@ public class AtividadeDao {
         if (rs.getObject("id_relatorio") != null) {
             atividade.setId_relatorio(rs.getInt("id_relatorio"));
         }
+
+        // Busca o nome do funcionário automaticamente através do relatório
+        atividade.setNome_funcionario(rs.getString("nome_funcionario"));
 
         return atividade;
     }

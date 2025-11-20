@@ -13,7 +13,7 @@ public class AtividadeRequestDto {
     @NotBlank(message = "A frequência recomendada é obrigatória.")
     private String frequencia_recomendada;
 
-    // APENAS id_relatorio
+
     private Integer id_relatorio;
 
     public AtividadeRequestDto() {}

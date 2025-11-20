@@ -1,7 +1,9 @@
 package br.com.fiap.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AtividadeResponseDto {
 
     @JsonProperty("id_atividade")
@@ -18,6 +20,9 @@ public class AtividadeResponseDto {
 
     @JsonProperty("id_relatorio")
     private Integer idRelatorio;
+
+    @JsonProperty("nome_funcionario")
+    private String nomeFuncionario;
 
     public AtividadeResponseDto() {}
 
@@ -37,6 +42,17 @@ public class AtividadeResponseDto {
         this.tipoAtividade = tipoAtividade;
         this.frequenciaRecomendada = frequenciaRecomendada;
         this.idRelatorio = idRelatorio;
+    }
+
+    public AtividadeResponseDto(Integer idAtividade, String descricaoAtividade,
+                                String tipoAtividade, String frequenciaRecomendada,
+                                Integer idRelatorio, String nomeFuncionario) {
+        this.idAtividade = idAtividade;
+        this.descricaoAtividade = descricaoAtividade;
+        this.tipoAtividade = tipoAtividade;
+        this.frequenciaRecomendada = frequenciaRecomendada;
+        this.idRelatorio = idRelatorio;
+        this.nomeFuncionario = nomeFuncionario;
     }
 
     public Integer getIdAtividade() {
@@ -77,5 +93,13 @@ public class AtividadeResponseDto {
 
     public void setIdRelatorio(Integer idRelatorio) {
         this.idRelatorio = idRelatorio;
+    }
+
+    public String getNomeFuncionario() {
+        return nomeFuncionario;
+    }
+
+    public void setNomeFuncionario(String nomeFuncionario) {
+        this.nomeFuncionario = nomeFuncionario;
     }
 }
