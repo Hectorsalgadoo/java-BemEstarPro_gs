@@ -11,12 +11,19 @@ import jakarta.ws.rs.core.*;
 import java.net.URI;
 import java.util.List;
 
+/**
+ * Recurso REST para operações relacionadas a relatórios.
+ * Expõe endpoints para listar, buscar, cadastrar, atualizar e excluir relatórios.
+ */
 @Path("/relatorio")
 public class RelatorioResource {
 
     @Inject
     RelatorioService relatorioService;
 
+    /**
+     * Lista todos os relatórios cadastrados no sistema.
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listar() {
@@ -31,6 +38,9 @@ public class RelatorioResource {
         }
     }
 
+    /**
+     * Busca um relatório específico pelo seu ID.
+     */
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -54,6 +64,10 @@ public class RelatorioResource {
         }
     }
 
+    /**
+     * Cadastra um novo relatório no sistema.
+     * Retorna o status 201 (Created) com a localização do novo recurso e os dados cadastrados.
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -89,6 +103,9 @@ public class RelatorioResource {
         }
     }
 
+    /**
+     * Atualiza os dados de um relatório existente.
+     */
     @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -115,6 +132,9 @@ public class RelatorioResource {
         }
     }
 
+    /**
+     * Exclui um relatório do sistema pelo seu ID.
+     */
     @DELETE
     @Path("/{id}")
     public Response excluir(@PathParam("id") int id) {

@@ -10,12 +10,26 @@ import jakarta.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Serviço para operações de negócio relacionadas a atividades.
+ * Responsável por orquestrar as operações entre controllers e DAOs,
+ * aplicando regras de negócio e convertendo entre DTOs e entidades.
+ *
+ */
 @ApplicationScoped
 public class AtividadeService {
 
     @Inject
     AtividadeDao atividadeDao;
 
+    /**
+     * Cria uma nova atividade no sistema.
+     * Converte o DTO de requisição para entidade, persiste no banco e retorna o DTO de resposta.
+     *
+     *  dto DTO contendo os dados da atividade a ser criada
+     *  DTO de resposta com os dados da atividade criada, incluindo ID gerado
+     *  RuntimeException Se ocorrer erro durante a persistência
+     */
     public AtividadeResponseDto criar(AtividadeRequestDto dto) {
         Atividade atividade = new Atividade();
         atividade.setDescricao_atividade(dto.getDescricao_atividade());
@@ -28,6 +42,13 @@ public class AtividadeService {
         return convertToDto(atividade);
     }
 
+    /**
+     * Lista todas as atividades cadastradas no sistema.
+     * Inclui o nome do funcionário associado através do relatório.
+     *
+     *  Lista de DTOs de resposta com todas as atividades
+     *  RuntimeException Se ocorrer erro durante a consulta
+     */
     public List<AtividadeResponseDto> listar() {
         return atividadeDao.listarTodos()
                 .stream()
@@ -35,6 +56,13 @@ public class AtividadeService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Busca uma atividade específica pelo seu ID.
+     *
+     *  id ID da atividade a ser buscada
+     *  DTO de resposta com os dados da atividade encontrada
+     *  RuntimeException Se a atividade não for encontrada
+     */
     public AtividadeResponseDto buscarPorId(Integer id) {
         Atividade atividade = atividadeDao.buscarPorId(id);
 
@@ -45,6 +73,10 @@ public class AtividadeService {
         return convertToDto(atividade);
     }
 
+    /**
+     * Atualiza os dados de uma atividade existente.
+     * Busca a atividade, atualiza seus dados e retorna a versão atualizada.
+     */
     public AtividadeResponseDto atualizar(Integer id, AtividadeRequestDto dto) {
         Atividade atividade = atividadeDao.buscarPorId(id);
 
@@ -59,11 +91,13 @@ public class AtividadeService {
 
         atividadeDao.atualizar(atividade);
 
-        // Busca a atividade atualizada para pegar o nome do funcionário
         Atividade atividadeAtualizada = atividadeDao.buscarPorId(id);
         return convertToDto(atividadeAtualizada);
     }
 
+    /**
+     * Exclui uma atividade do sistema pelo seu ID.
+     */
     public boolean deletar(Integer id) {
         try {
             return atividadeDao.deletar(id);
@@ -72,6 +106,10 @@ public class AtividadeService {
         }
     }
 
+    /**
+     * Converte uma entidade Atividade para um DTO de resposta.
+     * Método auxiliar que realiza o mapeamento entre a entidade de domínio e o DTO de apresentação.
+     */
     private AtividadeResponseDto convertToDto(Atividade atividade) {
         return new AtividadeResponseDto(
                 atividade.getId_atividade(),
@@ -79,7 +117,7 @@ public class AtividadeService {
                 atividade.getTipo_atividade(),
                 atividade.getFrequencia_recomendada(),
                 atividade.getId_relatorio(),
-                atividade.getNome_funcionario() // Agora vem automaticamente do JOIN
+                atividade.getNome_funcionario()
         );
     }
 }

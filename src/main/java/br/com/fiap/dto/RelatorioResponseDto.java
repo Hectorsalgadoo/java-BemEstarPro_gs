@@ -4,41 +4,62 @@ import br.com.fiap.models.Relatorio;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+/**
+ * DTO responsável por representar a resposta de um Relatório consolidado,
+ * contendo dados do relatório, informações do funcionário e dados da pesquisa,
+ * quando disponível.
+ *
+ * <p>Este DTO é utilizado para transferir dados ao cliente de forma segura,
+ * evitando exposição direta do modelo Relatorio.</p>
+ */
 @XmlRootElement
 public class RelatorioResponseDto {
 
+    /** Identificador único do relatório */
     @JsonProperty("id_relatorio")
     private int id_relatorio;
 
+    /** Nome do funcionário relacionado ao relatório */
     @JsonProperty("nome_funcionario")
     private String nomeFuncionario;
 
+    /** ID da pesquisa vinculada ao relatório (pode ser nulo) */
     @JsonProperty("id_pesquisa")
     private Integer id_pesquisa;
 
+    /** Regime de trabalho informado na pesquisa */
     @JsonProperty("regime_trabalho")
     private String regimeTrabalho;
 
+    /** Índice de satisfação informado na pesquisa */
     @JsonProperty("satisfacao")
     private Integer satisfacao;
 
+    /** Comentário registrado na pesquisa */
     @JsonProperty("comentario_pesquisa")
     private String comentarioPesquisa;
 
+    /** Resumo geral do feedback registrado no relatório */
     @JsonProperty("resumo_feedback")
     private String resumo_feedback;
 
+    /** Nível de bem-estar geral reportado */
     @JsonProperty("nivel_bem_estar")
     private String nivel_bem_estar;
 
+    /** Tendências de humor observadas */
     @JsonProperty("tendencias_humor")
     private String tendencias_humor;
 
-    // Construtor padrão
+    /**
+     * Construtor padrão.
+     */
     public RelatorioResponseDto() {
     }
 
-    // Construtor completo
+    /**
+     * Construtor completo para criação manual do DTO.
+     */
     public RelatorioResponseDto(int id_relatorio, String nomeFuncionario,
                                 Integer id_pesquisa, String regimeTrabalho, Integer satisfacao,
                                 String comentarioPesquisa, String resumo_feedback,
@@ -54,7 +75,12 @@ public class RelatorioResponseDto {
         this.tendencias_humor = tendencias_humor;
     }
 
-    // Construtor a partir de Relatorio
+    /**
+     * Constrói um DTO com base no modelo {@link Relatorio}.
+     *
+     *  relatorio objeto de modelo Relatorio
+     *  IllegalArgumentException se o relatório for nulo
+     */
     public RelatorioResponseDto(Relatorio relatorio) {
         if (relatorio == null) {
             throw new IllegalArgumentException("Relatorio não pode ser nulo");
@@ -63,21 +89,21 @@ public class RelatorioResponseDto {
         this.id_relatorio = relatorio.getId_relatorio();
         this.id_pesquisa = relatorio.hasPesquisa() ? relatorio.getId_pesquisa() : null;
 
-        // Extrai dados do funcionário
         this.nomeFuncionario = extractNomeFuncionario(relatorio);
-
-        // Extrai dados da pesquisa (se existir)
         this.regimeTrabalho = extractRegimeTrabalho(relatorio);
         this.satisfacao = extractSatisfacao(relatorio);
         this.comentarioPesquisa = extractComentario(relatorio);
 
-        // Dados principais do relatório
         this.resumo_feedback = relatorio.getResumo_feedback();
         this.nivel_bem_estar = relatorio.getNivel_bem_estar();
         this.tendencias_humor = relatorio.getTendencias_humor();
     }
 
-    // Métodos de extração melhorados
+
+    /**
+     * Obtém o nome do funcionário associado.
+     * Retorna uma mensagem padrão caso não exista funcionário.
+     */
     private String extractNomeFuncionario(Relatorio relatorio) {
         if (relatorio.getFuncionario() != null && relatorio.getFuncionario().getNome() != null) {
             return relatorio.getFuncionario().getNome();
@@ -85,6 +111,9 @@ public class RelatorioResponseDto {
         return "Funcionário não informado";
     }
 
+    /**
+     * Obtém o regime de trabalho, caso haja uma pesquisa vinculada.
+     */
     private String extractRegimeTrabalho(Relatorio relatorio) {
         if (relatorio.hasPesquisa() && relatorio.getPesquisaRegimeTrabalho() != null) {
             String regime = relatorio.getPesquisaRegimeTrabalho().getRegime_trabalho();
@@ -93,6 +122,9 @@ public class RelatorioResponseDto {
         return null;
     }
 
+    /**
+     * Obtém o nível de satisfação registrado na pesquisa.
+     */
     private Integer extractSatisfacao(Relatorio relatorio) {
         if (relatorio.hasPesquisa() && relatorio.getPesquisaRegimeTrabalho() != null) {
             return relatorio.getPesquisaRegimeTrabalho().getSatisfacao();
@@ -100,6 +132,9 @@ public class RelatorioResponseDto {
         return null;
     }
 
+    /**
+     * Obtém o comentário registrado na pesquisa.
+     */
     private String extractComentario(Relatorio relatorio) {
         if (relatorio.hasPesquisa() && relatorio.getPesquisaRegimeTrabalho() != null) {
             String comentario = relatorio.getPesquisaRegimeTrabalho().getComentario();
@@ -108,7 +143,10 @@ public class RelatorioResponseDto {
         return null;
     }
 
-    // Getters e Setters
+
+    /**
+     *  ID do relatório
+     */
     public int getId_relatorio() {
         return id_relatorio;
     }
@@ -117,6 +155,9 @@ public class RelatorioResponseDto {
         this.id_relatorio = id_relatorio;
     }
 
+    /**
+     *  nome do funcionário associado
+     */
     public String getNomeFuncionario() {
         return nomeFuncionario;
     }
@@ -181,15 +222,24 @@ public class RelatorioResponseDto {
         this.tendencias_humor = tendencias_humor;
     }
 
-    // Métodos utilitários
+
+    /**
+     * Verifica se há uma pesquisa associada ao relatório.
+     */
     public boolean hasPesquisa() {
         return id_pesquisa != null && id_pesquisa > 0;
     }
 
+    /**
+     * Verifica se há dados válidos de funcionário.
+     */
     public boolean hasFuncionario() {
         return nomeFuncionario != null && !nomeFuncionario.equals("Funcionário não informado");
     }
 
+    /**
+     * Retorna as primeiras 50 letras do resumo.
+     */
     public String getResumoPreview() {
         if (resumo_feedback == null || resumo_feedback.length() <= 50) {
             return resumo_feedback;
@@ -197,13 +247,17 @@ public class RelatorioResponseDto {
         return resumo_feedback.substring(0, 50) + "...";
     }
 
-    // Método estático para conversão
+    /**
+     * Converte automaticamente um objeto Relatorio para DTO.
+     */
     public static RelatorioResponseDto convertToDto(Relatorio relatorio) {
         if (relatorio == null) return null;
         return new RelatorioResponseDto(relatorio);
     }
 
-    // Builder pattern para criação fluente
+    /**
+     * Builder para construção fluente de RelatorioResponseDto.
+     */
     public static class Builder {
         private int id_relatorio;
         private String nomeFuncionario;
@@ -269,6 +323,9 @@ public class RelatorioResponseDto {
         }
     }
 
+    /**
+     * Cria um novo builder para este DTO.
+     */
     public static Builder builder() {
         return new Builder();
     }

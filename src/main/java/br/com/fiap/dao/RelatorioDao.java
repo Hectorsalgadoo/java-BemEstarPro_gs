@@ -12,12 +12,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Data Access Object (DAO) para operações CRUD da entidade Relatorio.
+ * Responsável por gerenciar o acesso ao banco de dados para relatórios.
+ * Inclui operações de cadastro, consulta, atualização e exclusão de relatórios,
+ * além de métodos auxiliares para validação de dados relacionados.
+ *
+ */
 @ApplicationScoped
 public class RelatorioDao {
 
     @Inject
     DataSource dataSource;
 
+    /**
+     * Cadastra um novo relatório no banco de dados.
+     * Realiza validações do ID do funcionário e trata campos opcionais como pesquisa.
+     * O ID gerado é automaticamente atribuído ao objeto relatório.
+     */
     public Relatorio cadastrarRelatorio(Relatorio relatorio) {
         String sql = "INSERT INTO RELATORIO (id_funcionario, id_pesquisa, resumo_feedback, nivel_bem_estar, tendencias_humor) VALUES (?, ?, ?, ?, ?)";
 
@@ -65,6 +77,11 @@ public class RelatorioDao {
         return relatorio;
     }
 
+    /**
+     * Método auxiliar para buscar o último ID de relatório cadastrado.
+     * Usado como fallback quando não é possível obter o ID gerado automaticamente.
+     *
+     */
     private void buscarUltimoIdRelatorio(Relatorio relatorio) {
         String sql = "SELECT MAX(id_relatorio) as ultimo_id FROM RELATORIO";
 
@@ -81,6 +98,11 @@ public class RelatorioDao {
         }
     }
 
+    /**
+     * Lista todos os relatórios cadastrados no banco de dados.
+     * Inclui informações do funcionário e da pesquisa associada (se existir).
+     * Os relatórios são ordenados por ID em ordem decrescente (mais recentes primeiro).
+     */
     public List<Relatorio> listRelatorio() {
         List<Relatorio> relatorios = new ArrayList<>();
         String sql = "SELECT r.id_relatorio, r.id_funcionario, r.id_pesquisa, r.resumo_feedback, r.nivel_bem_estar, r.tendencias_humor, f.nome_funcionario, p.regime_trabalho, p.satisfacao, p.comentario FROM RELATORIO r JOIN FUNCIONARIO f ON r.id_funcionario = f.id_funcionario LEFT JOIN PESQUISA_REGIME_TRABALHO p ON r.id_pesquisa = p.id_pesquisa ORDER BY r.id_relatorio DESC";
@@ -100,6 +122,10 @@ public class RelatorioDao {
         return relatorios;
     }
 
+    /**
+     * Busca um relatório específico pelo seu ID.
+     * Inclui informações completas do funcionário e da pesquisa associada (se existir).
+     */
     public Relatorio buscarPorIdRelatorio(int id) {
         String sql = "SELECT r.id_relatorio, r.id_funcionario, r.id_pesquisa, r.resumo_feedback, r.nivel_bem_estar, r.tendencias_humor, f.nome_funcionario, p.regime_trabalho, p.satisfacao, p.comentario FROM RELATORIO r JOIN FUNCIONARIO f ON r.id_funcionario = f.id_funcionario LEFT JOIN PESQUISA_REGIME_TRABALHO p ON r.id_pesquisa = p.id_pesquisa WHERE r.id_relatorio = ?";
 
@@ -120,6 +146,10 @@ public class RelatorioDao {
         }
     }
 
+    /**
+     * Atualiza os dados de um relatório existente no banco de dados.
+     * Realiza validações do ID do relatório antes da atualização.
+     */
     public void atualizar(Relatorio relatorio) {
         if (relatorio.getId_relatorio() <= 0) {
             throw new IllegalArgumentException("ID do relatório deve ser positivo");
@@ -154,6 +184,9 @@ public class RelatorioDao {
         }
     }
 
+    /**
+     * Exclui um relatório do banco de dados pelo seu ID.
+     */
     public void excluirRelatorio(int id) {
         if (id <= 0) {
             throw new IllegalArgumentException("ID inválido: " + id);
@@ -176,6 +209,9 @@ public class RelatorioDao {
         }
     }
 
+    /**
+     * Busca o funcionário associado a uma pesquisa de regime de trabalho específica.
+     */
     public Optional<Funcionario> buscarFuncionarioPorPesquisa(int idPesquisa) {
         if (idPesquisa <= 0) {
             return Optional.empty();
@@ -203,6 +239,9 @@ public class RelatorioDao {
         }
     }
 
+    /**
+     * Verifica se uma pesquisa de regime de trabalho existe no banco de dados.
+     */
     public boolean pesquisaExiste(int idPesquisa) {
         if (idPesquisa <= 0) {
             return false;
@@ -224,6 +263,11 @@ public class RelatorioDao {
         }
     }
 
+    /**
+     * Converte um ResultSet em um objeto Relatorio.
+     * Método auxiliar que mapeia os dados do banco para o objeto,
+     * incluindo informações do funcionário e da pesquisa associada.
+     */
     private Relatorio relatorioFromResultSet(ResultSet rs) throws SQLException {
         Relatorio r = new Relatorio();
 
@@ -258,6 +302,10 @@ public class RelatorioDao {
         return r;
     }
 
+    /**
+     * Verifica se uma coluna específica existe no ResultSet.
+     * Método auxiliar para lidar com diferenças na estrutura de resultados.
+     */
     private boolean hasColumn(ResultSet rs, String columnName) {
         try {
             rs.findColumn(columnName);

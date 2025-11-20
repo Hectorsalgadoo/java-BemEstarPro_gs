@@ -1,4 +1,3 @@
-
 package br.com.fiap.service;
 
 import br.com.fiap.dao.FuncionarioDao;
@@ -11,6 +10,13 @@ import jakarta.ws.rs.NotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Serviço para operações de negócio relacionadas a funcionários.
+ * Responsável por orquestrar as operações entre controllers e DAOs,
+ * aplicando regras de negócio, validações e convertendo entre DTOs e entidades.
+ * Inclui validações de CPF, verificação de duplicidade e tratamento de constraints.
+ *
+ */
 @ApplicationScoped
 public class FuncionarioService {
 
@@ -18,7 +24,8 @@ public class FuncionarioService {
     private FuncionarioDao funcionarioDao;
 
     /**
-     * Lista todos os funcionarios
+     * Lista todos os funcionários cadastrados no sistema.
+     * Converte as entidades Funcionario para DTOs de resposta.
      */
     public List<FuncionarioResponseDto> listar() {
         try {
@@ -37,7 +44,7 @@ public class FuncionarioService {
     }
 
     /**
-     * Busca funcionario por ID
+     * Busca um funcionário específico pelo seu ID.
      */
     public FuncionarioResponseDto buscarPorIdFuncionario(int id) {
         if (id <= 0) {
@@ -63,7 +70,7 @@ public class FuncionarioService {
     }
 
     /**
-     * Busca funcionario por CPF
+     * Busca um funcionário pelo número do CPF.
      */
     public FuncionarioResponseDto buscarPorCpf(String cpf) {
         if (cpf == null || cpf.length() != 11) {
@@ -87,7 +94,8 @@ public class FuncionarioService {
     }
 
     /**
-     * Cadastra novo funcionario - VERSÃO CORRIGIDA
+     * Cadastra um novo funcionário no sistema.
+     * Realiza validações de dados, verifica duplicidade de CPF e persiste no banco.
      */
     public FuncionarioResponseDto cadastrar(FuncionarioRequestDto funcionarioDto) {
         if (funcionarioDto == null) {
@@ -141,7 +149,8 @@ public class FuncionarioService {
     }
 
     /**
-     * Atualiza funcionario existente - VERSÃO CORRIGIDA
+     * Atualiza os dados de um funcionário existente.
+     * Realiza validações, verifica duplicidade de CPF e atualiza no banco.
      */
     public void atualizar(FuncionarioRequestDto funcionarioDto) {
         if (funcionarioDto == null) {
@@ -188,7 +197,8 @@ public class FuncionarioService {
     }
 
     /**
-     * Exclui funcionario por ID
+     * Exclui um funcionário do sistema pelo seu ID.
+     * Verifica se o funcionário existe e trata constraints de chave estrangeira.
      */
     public void excluir(int id) {
         if (id <= 0) {

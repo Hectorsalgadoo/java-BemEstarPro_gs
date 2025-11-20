@@ -14,6 +14,13 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Serviço para operações de negócio relacionadas a relatórios.
+ * Responsável por orquestrar as operações entre controllers e DAOs,
+ * aplicando regras de negócio, validações e convertendo entre DTOs e entidades.
+ * Inclui validações de dados, busca de funcionários por pesquisa e tratamento de integridade referencial.
+ *
+ */
 @ApplicationScoped
 public class RelatorioService {
 
@@ -23,6 +30,10 @@ public class RelatorioService {
     @Inject
     private FuncionarioDao funcionarioDao;
 
+    /**
+     * Lista todos os relatórios cadastrados no sistema.
+     * Converte as entidades Relatorio para DTOs de resposta.
+     */
     public List<RelatorioResponseDto> listar() {
         try {
             List<Relatorio> relatorios = relatorioDao.listRelatorio();
@@ -34,6 +45,9 @@ public class RelatorioService {
         }
     }
 
+    /**
+     * Busca um relatório específico pelo seu ID.
+     */
     public RelatorioResponseDto buscarPorId(int id) {
         validarIdRelatorio(id);
 
@@ -50,6 +64,10 @@ public class RelatorioService {
         }
     }
 
+    /**
+     * Cadastra um novo relatório no sistema.
+     * Realiza validações dos dados, busca o funcionário associado à pesquisa e persiste no banco.
+     */
     public RelatorioResponseDto cadastrar(RelatorioRequestDto relatorioDto) throws SQLException {
         validarDto(relatorioDto);
         relatorioDto.cleanData();
@@ -62,19 +80,22 @@ public class RelatorioService {
             return RelatorioResponseDto.convertToDto(relatorio);
 
         } catch (IllegalArgumentException e) {
-            throw e; // Re-lança exceções de validação
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException("Erro ao cadastrar relatório: " + e.getMessage(), e);
         }
     }
 
+    /**
+     * Atualiza os dados de um relatório existente.
+     * Realiza validações dos dados, busca o funcionário associado e atualiza no banco.
+     */
     public void atualizar(RelatorioRequestDto relatorioDto, int id) throws SQLException {
         validarIdRelatorio(id);
         validarDto(relatorioDto);
         relatorioDto.cleanData();
 
         try {
-            // Verifica se o relatório existe
             Relatorio relatorioExistente = relatorioDao.buscarPorIdRelatorio(id);
             if (relatorioExistente == null) {
                 throw new NotFoundException("Relatório com ID " + id + " não encontrado");
@@ -87,17 +108,20 @@ public class RelatorioService {
             relatorioDao.atualizar(relatorio);
 
         } catch (NotFoundException | IllegalArgumentException e) {
-            throw e; // Re-lança exceções específicas
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException("Erro ao atualizar relatório ID " + id + ": " + e.getMessage(), e);
         }
     }
 
+    /**
+     * Exclui um relatório do sistema pelo seu ID.
+     * Verifica se o relatório existe antes de realizar a exclusão.
+     */
     public void excluir(int id) {
         validarIdRelatorio(id);
 
         try {
-            // Verifica se o relatório existe antes de excluir
             Relatorio relatorio = relatorioDao.buscarPorIdRelatorio(id);
             if (relatorio == null) {
                 throw new NotFoundException("Relatório com ID " + id + " não encontrado");
@@ -112,14 +136,20 @@ public class RelatorioService {
         }
     }
 
-    // ========== MÉTODOS PRIVADOS AUXILIARES ==========
 
+    /**
+     * Valida se o ID do relatório é válido (positivo).
+     */
     private void validarIdRelatorio(int id) {
         if (id <= 0) {
             throw new IllegalArgumentException("ID do relatório deve ser positivo");
         }
     }
 
+    /**
+     * Valida os dados do DTO de requisição do relatório.
+     * Verifica se os campos obrigatórios estão preenchidos corretamente.
+     */
     private void validarDto(RelatorioRequestDto relatorioDto) {
         if (relatorioDto == null) {
             throw new IllegalArgumentException("DTO do relatório não pode ser nulo");
@@ -142,6 +172,9 @@ public class RelatorioService {
         }
     }
 
+    /**
+     * Busca o funcionário associado a uma pesquisa específica.
+     */
     private Funcionario buscarFuncionarioPorPesquisa(int idPesquisa) {
         Funcionario funcionario = funcionarioDao.buscarFuncionarioPorPesquisa(idPesquisa);
         if (funcionario == null) {
@@ -152,10 +185,12 @@ public class RelatorioService {
         return funcionario;
     }
 
+    /**
+     * Cria uma entidade Relatorio a partir do DTO de requisição e do funcionário associado.
+     */
     private Relatorio criarRelatorio(RelatorioRequestDto relatorioDto, Funcionario funcionario) {
         Relatorio relatorio = new Relatorio();
 
-        // Define o id_funcionario automaticamente a partir da pesquisa
         relatorio.setId_funcionario(funcionario.getId());
         relatorio.setId_pesquisa(relatorioDto.getId_pesquisa());
         relatorio.setFuncionario(funcionario);

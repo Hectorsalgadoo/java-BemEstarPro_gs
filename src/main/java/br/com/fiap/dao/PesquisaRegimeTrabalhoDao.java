@@ -10,6 +10,12 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object (DAO) para operações CRUD da entidade PesquisaRegimeTrabalho.
+ * Responsável por gerenciar o acesso ao banco de dados para pesquisas de regime de trabalho.
+ * Inclui operações de cadastro, consulta, atualização e exclusão de pesquisas.
+ *
+ */
 @ApplicationScoped
 public class PesquisaRegimeTrabalhoDao {
 
@@ -17,10 +23,16 @@ public class PesquisaRegimeTrabalhoDao {
     private FuncionarioDao funcionarioDao;
 
     /**
-     * Cadastra uma pesquisa de satisfacao
+     * Cadastra uma pesquisa de satisfação de regime de trabalho
      */
     @Inject
     private DataSource dataSource;
+
+    /**
+     * Cadastra uma nova pesquisa de regime de trabalho no banco de dados.
+     * O ID do funcionário é obrigatório para associar a pesquisa a um funcionário específico.
+     * O ID gerado é automaticamente atribuído ao objeto pesquisa.
+     */
     public void cadastrarPesquisa(PesquisaRegimeTrabalho pesquisa) {
         String sql = "INSERT INTO PESQUISA_REGIME_TRABALHO (satisfacao,regime_trabalho,comentario,id_funcionario) VALUES (?, ?, ?, ?)";
 
@@ -58,7 +70,9 @@ public class PesquisaRegimeTrabalhoDao {
     }
 
     /**
-     * Lista todas as pesquisas de satisfacao
+     * Lista todas as pesquisas de regime de trabalho cadastradas no banco de dados.
+     * Inclui informações completas do funcionário associado a cada pesquisa.
+     * As pesquisas são ordenadas por ID em ordem decrescente (mais recentes primeiro).
      */
     public List<PesquisaRegimeTrabalho> listarPesquisa() {
         List<PesquisaRegimeTrabalho> pesquisas = new ArrayList<>();
@@ -86,7 +100,9 @@ public class PesquisaRegimeTrabalhoDao {
     }
 
     /**
-     * Cria objeto Pesquisa a partir do ResultSet
+     * Cria um objeto PesquisaRegimeTrabalho a partir dos dados de um ResultSet.
+     * Método auxiliar que mapeia os dados do banco para o objeto, incluindo
+     * as informações do funcionário associado.
      */
     private PesquisaRegimeTrabalho criarPesquisaFromResultSet(ResultSet rs) throws SQLException {
         PesquisaRegimeTrabalho pesquisa = new PesquisaRegimeTrabalho();
@@ -109,7 +125,8 @@ public class PesquisaRegimeTrabalhoDao {
     }
 
     /**
-     * Busca consulta online por ID
+     * Busca uma pesquisa de regime de trabalho específica pelo seu ID.
+     * Inclui informações completas do funcionário associado à pesquisa.
      */
     public PesquisaRegimeTrabalho buscarPorIdPesquisa(int id) {
         String sql = "SELECT " +
@@ -137,7 +154,8 @@ public class PesquisaRegimeTrabalhoDao {
     }
 
     /**
-     * Atualiza uma pesquisa de satisfacao
+     * Atualiza os dados de uma pesquisa de regime de trabalho existente.
+     * Realiza validações de ID da pesquisa e ID do funcionário antes da atualização.
      */
     public void atualizar(PesquisaRegimeTrabalho pesquisaRegimeTrabalho) {
         if (pesquisaRegimeTrabalho.getId_pesquisa() <= 0) {
@@ -174,7 +192,7 @@ public class PesquisaRegimeTrabalhoDao {
     }
 
     /**
-     * Exclui uma pesquisa  por ID
+     * Exclui uma pesquisa de regime de trabalho do banco de dados pelo seu ID.
      */
     public void excluirPesquisa(int id) {
         if (id <= 0) {
@@ -198,7 +216,4 @@ public class PesquisaRegimeTrabalhoDao {
             throw new RuntimeException("Erro ao excluir a pesquisa", e);
         }
     }
-
-
-
 }

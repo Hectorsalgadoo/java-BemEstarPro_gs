@@ -14,7 +14,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Recurso REST para pesquisa
+ * Recurso REST para operações relacionadas a pesquisas de regime de trabalho.
+ * Expõe endpoints para listar, buscar, cadastrar, atualizar e excluir pesquisas.
+ *
  */
 @Path("/pesquisa")
 public class PesquisaRegimeTrabalhoResource {
@@ -23,7 +25,10 @@ public class PesquisaRegimeTrabalhoResource {
     private PesquisaRegimeTrabalhoService pesquisaRegimeTrabalhoService;
 
     /**
-     * Lista todas as consultas online
+     * Lista todas as pesquisas de regime de trabalho cadastradas.
+     *
+     *  Response com lista de pesquisas em formato JSON
+     *  Exception Se ocorrer erro interno no servidor
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -40,7 +45,7 @@ public class PesquisaRegimeTrabalhoResource {
     }
 
     /**
-     * Busca consulta online por ID
+     * Busca uma pesquisa de regime de trabalho específica pelo seu ID.
      */
     @GET
     @Path("/{id}")
@@ -66,7 +71,8 @@ public class PesquisaRegimeTrabalhoResource {
     }
 
     /**
-     * Cadastra nova consulta online
+     * Cadastra uma nova pesquisa de regime de trabalho.
+     * Retorna o status 201 (Created) com a localização do novo recurso.
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -102,7 +108,7 @@ public class PesquisaRegimeTrabalhoResource {
     }
 
     /**
-     * Atualiza consulta online existente
+     * Atualiza os dados de uma pesquisa de regime de trabalho existente.
      */
     @PUT
     @Path("/{id}")
@@ -131,7 +137,7 @@ public class PesquisaRegimeTrabalhoResource {
     }
 
     /**
-     * Exclui consulta online por ID
+     * Exclui uma pesquisa de regime de trabalho pelo seu ID.
      */
     @DELETE
     @Path("/{id}")
@@ -154,7 +160,4 @@ public class PesquisaRegimeTrabalhoResource {
                     .build();
         }
     }
-
-
-
 }

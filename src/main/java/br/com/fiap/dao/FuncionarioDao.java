@@ -12,6 +12,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object (DAO) para operações CRUD da entidade Funcionario.
+ * Responsável por gerenciar o acesso ao banco de dados para funcionários.
+ * Inclui validações de CPF e operações de cadastro, consulta, atualização e exclusão.
+ *
+ */
 @ApplicationScoped
 public class FuncionarioDao {
 
@@ -19,9 +25,9 @@ public class FuncionarioDao {
     DataSource dataSource;
 
     /**
-     *
-     * Cadastra um cuncionario novo
-     * @param funcionario
+     * Cadastra um novo funcionário no banco de dados.
+     * Realiza validações de nome, CPF e cargo antes da inserção.
+     * O ID gerado é automaticamente atribuído ao objeto funcionário.
      */
     public void cadastrarFun(Funcionario funcionario){
         // Validações iniciais
@@ -97,8 +103,10 @@ public class FuncionarioDao {
             }
         }
     }
+
     /**
-     * Lista todos os Funcionario
+     * Lista todos os funcionários cadastrados no banco de dados.
+     * Os funcionários são ordenados por nome para facilitar a visualização.
      */
     public List<Funcionario> listarFuncionarios() {
         List<Funcionario> funcionarios = new ArrayList<>();
@@ -127,9 +135,7 @@ public class FuncionarioDao {
     }
 
     /**
-     * Busca um funcionario por um id
-     * @param id
-     * @return
+     * Busca um funcionário específico pelo seu ID.
      */
     public Funcionario buscarPorIdFuncionario(int id) {
         Funcionario funcionario = null;
@@ -160,6 +166,9 @@ public class FuncionarioDao {
         return funcionario;
     }
 
+    /**
+     * Busca um funcionário associado a uma pesquisa de regime de trabalho específica.
+     */
     public Funcionario buscarFuncionarioPorPesquisa(int id_pesquisa) {
         String sql = """
                  SELECT f.id_funcionario, f.nome_funcionario, f.cpf_funcionario, f.cargo_funcionario
@@ -192,7 +201,8 @@ public class FuncionarioDao {
     }
 
     /**
-     * Atualiza um funcionario existente
+     * Atualiza os dados de um funcionário existente no banco de dados.
+     * Realiza validações de ID e CPF antes da atualização.
      */
     public void atualizaFuncionario(Funcionario funcionario) {
         if (funcionario.getId() <= 0) {
@@ -233,7 +243,7 @@ public class FuncionarioDao {
     }
 
     /**
-     * Exclui um funcionario por ID
+     * Exclui um funcionário do banco de dados pelo seu ID.
      */
     public void excluirFuncionario(int id) {
         if (id <= 0) {
@@ -259,7 +269,8 @@ public class FuncionarioDao {
     }
 
     /**
-     * Busca funcionario por CPF
+     * Busca um funcionário pelo número do CPF.
+     * Realiza validações do formato do CPF antes da consulta.
      */
     public Funcionario buscarPorCpf(String cpf) {
         if (cpf == null || cpf.trim().isEmpty() || cpf.length() != 11) {
@@ -296,8 +307,4 @@ public class FuncionarioDao {
         }
         return funcionario;
     }
-
-
-
 }
-

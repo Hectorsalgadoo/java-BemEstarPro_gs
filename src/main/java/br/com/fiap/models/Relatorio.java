@@ -1,5 +1,11 @@
 package br.com.fiap.models;
 
+/**
+ * Classe que representa um Relatório no sistema.
+ * Contém informações consolidadas sobre feedback, bem-estar e tendências de humor dos funcionários.
+ * Pode estar associado a um funcionário e uma pesquisa de regime de trabalho.
+ * Inclui métodos de validação, utilitários e suporte ao padrão Builder.
+ */
 public class Relatorio {
 
     private int id_relatorio;
@@ -11,10 +17,22 @@ public class Relatorio {
     private String nivel_bem_estar;
     private String tendencias_humor;
 
-    // Construtores
+    /**
+     * Construtor padrão que inicializa um relatório vazio.
+     * Útil para criar instâncias que serão preenchidas posteriormente.
+     */
     public Relatorio() {
     }
 
+    /**
+     * Construtor com dados básicos do relatório usando IDs.
+     *
+     *  id_funcionario ID do funcionário associado ao relatório
+     *  id_pesquisa ID da pesquisa associada ao relatório
+     * resumo_feedback Resumo consolidado do feedback
+     * nivel_bem_estar Nível geral de bem-estar identificado
+     *  tendencias_humor Tendências de humor observadas
+     */
     public Relatorio(int id_funcionario, int id_pesquisa, String resumo_feedback,
                      String nivel_bem_estar, String tendencias_humor) {
         this.id_funcionario = id_funcionario;
@@ -24,6 +42,15 @@ public class Relatorio {
         this.tendencias_humor = tendencias_humor;
     }
 
+    /**
+     * Construtor com objetos completos associados ao relatório.
+     *
+     *  funcionario Objeto Funcionario associado ao relatório
+     *  pesquisaRegimeTrabalho Objeto PesquisaRegimeTrabalho associado
+     *  resumo_feedback Resumo consolidado do feedback
+     * nivel_bem_estar Nível geral de bem-estar identificado
+     *  tendencias_humor Tendências de humor observadas
+     */
     public Relatorio(Funcionario funcionario, PesquisaRegimeTrabalho pesquisaRegimeTrabalho,
                      String resumo_feedback, String nivel_bem_estar, String tendencias_humor) {
         setFuncionario(funcionario);
@@ -33,19 +60,32 @@ public class Relatorio {
         this.tendencias_humor = tendencias_humor;
     }
 
-    // Getters e Setters
+    /**
+     *  ID único do relatório
+     */
     public int getId_relatorio() {
         return id_relatorio;
     }
 
+    /**
+     * @param id_relatorio ID único do relatório
+     */
     public void setId_relatorio(int id_relatorio) {
         this.id_relatorio = id_relatorio;
     }
 
+    /**
+     *  Objeto Funcionario associado ao relatório
+     */
     public Funcionario getFuncionario() {
         return funcionario;
     }
 
+    /**
+     * Define o funcionário associado e atualiza automaticamente o ID do funcionário.
+     *
+     * @param funcionario Objeto Funcionario associado ao relatório
+     */
     public void setFuncionario(Funcionario funcionario) {
         this.funcionario = funcionario;
         if (funcionario != null) {
@@ -53,10 +93,18 @@ public class Relatorio {
         }
     }
 
+    /**
+     * ID do funcionário associado ao relatório
+     */
     public int getId_funcionario() {
         return id_funcionario;
     }
 
+    /**
+     * Define o ID do funcionário e remove referência inconsistente se houver.
+     *
+     * @param id_funcionario ID do funcionário associado ao relatório
+     */
     public void setId_funcionario(int id_funcionario) {
         this.id_funcionario = id_funcionario;
         // Se já temos um funcionário com ID diferente, atualiza ou remove a referência
@@ -65,10 +113,17 @@ public class Relatorio {
         }
     }
 
+    /**
+     *  Objeto PesquisaRegimeTrabalho associado ao relatório
+     */
     public PesquisaRegimeTrabalho getPesquisaRegimeTrabalho() {
         return pesquisaRegimeTrabalho;
     }
 
+    /**
+     * Define a pesquisa associada e atualiza automaticamente o ID da pesquisa.
+
+     */
     public void setPesquisaRegimeTrabalho(PesquisaRegimeTrabalho pesquisaRegimeTrabalho) {
         this.pesquisaRegimeTrabalho = pesquisaRegimeTrabalho;
         if (pesquisaRegimeTrabalho != null) {
@@ -76,10 +131,17 @@ public class Relatorio {
         }
     }
 
+    /**
+     *nID da pesquisa associada ao relatório
+     */
     public int getId_pesquisa() {
         return id_pesquisa;
     }
 
+    /**
+     * Define o ID da pesquisa e remove referência inconsistente se houver.
+
+     */
     public void setId_pesquisa(int id_pesquisa) {
         this.id_pesquisa = id_pesquisa;
         // Se já temos uma pesquisa com ID diferente, atualiza ou remove a referência
@@ -88,39 +150,65 @@ public class Relatorio {
         }
     }
 
+    /**
+     *  Resumo consolidado do feedback
+     */
     public String getResumo_feedback() {
         return resumo_feedback;
     }
 
+    /**
+     * resumo_feedback Resumo consolidado do feedback
+     */
     public void setResumo_feedback(String resumo_feedback) {
         this.resumo_feedback = resumo_feedback;
     }
 
+    /**
+     *  Nível geral de bem-estar identificado
+     */
     public String getNivel_bem_estar() {
         return nivel_bem_estar;
     }
 
+    /**
+     *  nivel_bem_estar Nível geral de bem-estar identificado
+     */
     public void setNivel_bem_estar(String nivel_bem_estar) {
         this.nivel_bem_estar = nivel_bem_estar;
     }
 
+    /**
+     *  Tendências de humor observadas
+     */
     public String getTendencias_humor() {
         return tendencias_humor;
     }
 
+    /**
+     *  tendencias_humor Tendências de humor observadas
+     */
     public void setTendencias_humor(String tendencias_humor) {
         this.tendencias_humor = tendencias_humor;
     }
 
-    // Métodos de validação e utilidade
+    /**
+     * Verifica se o relatório possui uma pesquisa associada.
+     */
     public boolean hasPesquisa() {
         return id_pesquisa > 0;
     }
 
+    /**
+     * Verifica se o relatório possui um funcionário associado.
+     */
     public boolean hasFuncionario() {
         return id_funcionario > 0;
     }
 
+    /**
+     * Valida se o relatório está completo e com dados válidos.
+     */
     public boolean isValid() {
         return hasFuncionario() &&
                 resumo_feedback != null && !resumo_feedback.trim().isEmpty() &&
@@ -128,6 +216,9 @@ public class Relatorio {
                 tendencias_humor != null && !tendencias_humor.trim().isEmpty();
     }
 
+    /**
+     * Retorna mensagem de validação indicando qual campo está inválido.
+     */
     public String getValidationMessage() {
         if (!hasFuncionario()) {
             return "ID do funcionário é obrigatório";
@@ -144,6 +235,9 @@ public class Relatorio {
         return "VALID";
     }
 
+    /**
+     * Limpa e formata os dados de texto do relatório removendo espaços extras.
+     */
     public void cleanData() {
         if (this.resumo_feedback != null) {
             this.resumo_feedback = this.resumo_feedback.trim();
@@ -156,7 +250,10 @@ public class Relatorio {
         }
     }
 
-    // Método para criar uma cópia do relatório
+    /**
+     * Cria uma cópia superficial do relatório atual.
+     * Nota: não copia as referências a objetos para evitar side effects.
+     */
     public Relatorio copy() {
         Relatorio copia = new Relatorio();
         copia.id_relatorio = this.id_relatorio;
@@ -165,11 +262,12 @@ public class Relatorio {
         copia.resumo_feedback = this.resumo_feedback;
         copia.nivel_bem_estar = this.nivel_bem_estar;
         copia.tendencias_humor = this.tendencias_humor;
-        // Nota: não copiamos as referências a objetos para evitar side effects
         return copia;
     }
 
-    // Método para criar relatório a partir de DTO (simulação)
+    /**
+     * Método estático para criar relatório a partir de dados básicos.
+     */
     public static Relatorio fromBasicData(int id_funcionario, int id_pesquisa,
                                           String resumo_feedback, String nivel_bem_estar,
                                           String tendencias_humor) {
@@ -182,7 +280,10 @@ public class Relatorio {
         return relatorio;
     }
 
-    // Builder pattern
+    /**
+     * Classe Builder para construção fluente de objetos Relatorio.
+     * Permite configurar o relatório passo a passo de forma mais legível.
+     */
     public static class Builder {
         private int id_relatorio;
         private int id_funcionario;
@@ -193,58 +294,94 @@ public class Relatorio {
         private Funcionario funcionario;
         private PesquisaRegimeTrabalho pesquisaRegimeTrabalho;
 
+        /**
+         *  id_relatorio ID único do relatório
+         *  Próprio builder para encadeamento
+         */
         public Builder id_relatorio(int id_relatorio) {
             this.id_relatorio = id_relatorio;
             return this;
         }
 
+        /**
+         *  id_funcionario ID do funcionário associado
+         *  Próprio builder para encadeamento
+         */
         public Builder id_funcionario(int id_funcionario) {
             this.id_funcionario = id_funcionario;
             return this;
         }
 
+        /**
+         *  id_pesquisa ID da pesquisa associada
+         *  Próprio builder para encadeamento
+         */
         public Builder id_pesquisa(int id_pesquisa) {
             this.id_pesquisa = id_pesquisa;
             return this;
         }
 
+        /**
+         *  resumo_feedback Resumo consolidado do feedback
+         *  Próprio builder para encadeamento
+         */
         public Builder resumo_feedback(String resumo_feedback) {
             this.resumo_feedback = resumo_feedback;
             return this;
         }
 
+        /**
+         *  nivel_bem_estar Nível geral de bem-estar
+         *  Próprio builder para encadeamento
+         */
         public Builder nivel_bem_estar(String nivel_bem_estar) {
             this.nivel_bem_estar = nivel_bem_estar;
             return this;
         }
 
+        /**
+         *  tendencias_humor Tendências de humor observadas
+         *  Próprio builder para encadeamento
+         */
         public Builder tendencias_humor(String tendencias_humor) {
             this.tendencias_humor = tendencias_humor;
             return this;
         }
 
+        /**
+         *  funcionario Objeto Funcionario associado
+         *  Próprio builder para encadeamento
+         */
         public Builder funcionario(Funcionario funcionario) {
             this.funcionario = funcionario;
             return this;
         }
 
+        /**
+         *  pesquisaRegimeTrabalho Objeto PesquisaRegimeTrabalho associado
+         *  Próprio builder para encadeamento
+         */
         public Builder pesquisaRegimeTrabalho(PesquisaRegimeTrabalho pesquisaRegimeTrabalho) {
             this.pesquisaRegimeTrabalho = pesquisaRegimeTrabalho;
             return this;
         }
 
+        /**
+         * Constrói o objeto Relatorio final com as configurações do builder.
+         *
+         *  Nova instância de Relatorio configurada
+         */
         public Relatorio build() {
             Relatorio relatorio = new Relatorio();
             relatorio.setId_relatorio(this.id_relatorio);
 
-            // Prioriza o objeto funcionário se disponível
+
             if (this.funcionario != null) {
                 relatorio.setFuncionario(this.funcionario);
             } else {
                 relatorio.setId_funcionario(this.id_funcionario);
             }
 
-            // Prioriza o objeto pesquisa se disponível
             if (this.pesquisaRegimeTrabalho != null) {
                 relatorio.setPesquisaRegimeTrabalho(this.pesquisaRegimeTrabalho);
             } else {
@@ -259,10 +396,16 @@ public class Relatorio {
         }
     }
 
+    /**
+     * Cria um novo builder para construção fluente de Relatorio.
+     */
     public static Builder builder() {
         return new Builder();
     }
 
+    /**
+     * Retorna uma representação em string dos dados do relatório.
+     */
     @Override
     public String toString() {
         return "Relatorio{" +
@@ -277,6 +420,9 @@ public class Relatorio {
                 '}';
     }
 
+    /**
+     * Compara este relatório com outro objeto para verificar igualdade.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -294,6 +440,9 @@ public class Relatorio {
         return tendencias_humor != null ? tendencias_humor.equals(relatorio.tendencias_humor) : relatorio.tendencias_humor == null;
     }
 
+    /**
+     * Retorna o código hash do relatório para uso em coleções.
+     */
     @Override
     public int hashCode() {
         int result = id_relatorio;

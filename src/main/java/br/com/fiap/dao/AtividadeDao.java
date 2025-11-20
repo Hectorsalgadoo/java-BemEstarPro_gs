@@ -9,12 +9,24 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object (DAO) para operações CRUD da entidade Atividade.
+ * Responsável por gerenciar o acesso ao banco de dados para atividades.
+ *
+ */
 @ApplicationScoped
 public class AtividadeDao {
 
     @Inject
     DataSource dataSource;
 
+    /**
+     * Insere uma nova atividade no banco de dados.
+     *
+     *  atividade Objeto Atividade a ser inserido (sem ID)
+     *  A mesma atividade com o ID gerado pelo banco de dados
+     *  RuntimeException Se ocorrer erro na operação de inserção
+     */
     public Atividade inserir(Atividade atividade) {
         String sql = """
             INSERT INTO ATIVIDADE (descricao_atividade, tipo_atividade, frequencia_recomendada, id_relatorio)
@@ -50,6 +62,13 @@ public class AtividadeDao {
         return atividade;
     }
 
+    /**
+     * Lista todas as atividades do banco de dados.
+     * Inclui o nome do funcionário associado através do relatório.
+     *
+     * Lista de todas as atividades ordenadas por ID
+     *  RuntimeException Se ocorrer erro na operação de consulta
+     */
     public List<Atividade> listarTodos() {
         List<Atividade> atividades = new ArrayList<>();
         String sql = """
@@ -75,6 +94,10 @@ public class AtividadeDao {
         return atividades;
     }
 
+    /**
+     * Busca uma atividade específica pelo seu ID.
+     * Inclui o nome do funcionário associado através do relatório.
+     */
     public Atividade buscarPorId(Integer id) {
         String sql = """
             SELECT a.*, f.nome_funcionario 
@@ -102,6 +125,10 @@ public class AtividadeDao {
         return null;
     }
 
+    /**
+     * Converte um ResultSet em um objeto Atividade.
+     * Método auxiliar para mapear os dados do banco para o objeto.
+     */
     private Atividade atividadeFromResultSet(ResultSet rs) throws SQLException {
         Atividade atividade = new Atividade();
 
@@ -120,6 +147,9 @@ public class AtividadeDao {
         return atividade;
     }
 
+    /**
+     * Atualiza os dados de uma atividade existente no banco de dados.
+     */
     public void atualizar(Atividade atividade) {
         String sql = """
             UPDATE ATIVIDADE
@@ -156,6 +186,9 @@ public class AtividadeDao {
         }
     }
 
+    /**
+     * Exclui uma atividade do banco de dados pelo seu ID.
+     */
     public boolean deletar(Integer id) {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException("ID da atividade deve ser positivo");

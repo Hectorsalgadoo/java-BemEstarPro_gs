@@ -10,12 +10,36 @@ import jakarta.ws.rs.core.*;
 import java.net.URI;
 import java.util.List;
 
+/**
+ * Recurso REST responsável por gerenciar operações relacionadas a Atividades.
+ *
+ * <p>Fornece endpoints para listar, buscar, cadastrar, atualizar e excluir atividades.
+ * Utiliza o padrão DTO para entrada e saída de dados.</p>
+ *
+ * <p>Endpoints disponíveis:</p>
+ * <ul>
+ *     <li>GET /atividade — lista todas as atividades</li>
+ *     <li>GET /atividade/{id} — busca uma atividade por ID</li>
+ *     <li>POST /atividade — cria uma nova atividade</li>
+ *     <li>PUT /atividade/{id} — atualiza uma atividade existente</li>
+ *     <li>DELETE /atividade/{id} — exclui uma atividade por ID</li>
+ * </ul>
+ *
+ * <p>Gerencia respostas HTTP apropriadas e mensagens de erro com tratamento
+ * para exceções comuns, como NotFoundException e IllegalArgumentException.</p>
+ */
 @Path("/atividade")
 public class AtividadeResource {
 
     @Inject
     AtividadeService atividadeService;
 
+    /**
+     * Lista todas as atividades cadastradas.
+     *
+     *  lista de {@link AtividadeResponseDto} com status HTTP 200,
+     * ou status 500 em caso de erro interno.
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response listar() {
@@ -30,8 +54,13 @@ public class AtividadeResource {
         }
     }
 
-    // MÉTODO REMOVIDO: buscarPorRelatorio
-
+    /**
+     * Busca uma atividade pelo ID.
+     *
+     *  id identificador da atividade
+     *  atividade encontrada (HTTP 200), erro 404 se não existir,
+     * ou erro 400 se o ID for inválido.
+     */
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -58,6 +87,13 @@ public class AtividadeResource {
         }
     }
 
+    /**
+     * Cadastra uma nova atividade.
+     *
+     *  request dados enviados pelo cliente para criação
+     *  uriInfo informações da URI para construção do Location do recurso criado
+     *  atividade criada com status 201, ou erros 400/500
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -91,6 +127,13 @@ public class AtividadeResource {
         }
     }
 
+    /**
+     * Atualiza uma atividade existente.
+     *
+     *  id identificador da atividade
+     *  request dados atualizados
+     *  atividade atualizada com status 200, ou erros 400/404/500
+     */
     @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -118,6 +161,12 @@ public class AtividadeResource {
         }
     }
 
+    /**
+     * Exclui uma atividade pelo ID.
+     *
+     *  id identificador da atividade
+     *  status 204 se excluído, 404 se não existir, ou 400/500 para erros
+     */
     @DELETE
     @Path("/{id}")
     public Response excluir(@PathParam("id") int id) {
